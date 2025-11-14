@@ -12,13 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transaksis', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('kasir_id')->constrained('kasirs')->onDelete('cascade');
-    $table->string('kode_qr')->unique();
-    $table->decimal('total_harga', 12, 2)->default(0);
-    $table->timestamps();
-});
+            $table->id();
+            $table->foreignId('kasir_id')->constrained('kasirs')->onDelete('cascade');
+            $table->string('kode_qr')->unique();
+            $table->decimal('total_harga', 12, 2)->default(0);
 
+            // ✅ Kolom tambahan untuk fitur pembayaran
+            $table->decimal('jumlah_bayar', 12, 2)->nullable()->default(0);
+            $table->decimal('kembalian', 12, 2)->nullable()->default(0);
+
+            $table->timestamps();
+        });
     }
 
     /**

@@ -177,6 +177,21 @@
   <div class="container-transaksi">
     <h2>🛍️ Transaksi</h2>
 
+    @if(session('error'))
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ session('error') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+@endif
+
+@if(session('success'))
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+@endif
+
+
     <form action="{{ route('transaksi.store') }}" method="POST">
       @csrf
 
@@ -252,6 +267,16 @@
         </select>
       </div>
 
+      <!-- Jumlah Bayar & Kembalian -->
+      <div class="mt-3">
+        <label>Jumlah Bayar (Rp)</label>
+        <input type="number" name="jumlah_bayar" id="jumlahBayar" class="form-control" placeholder="Masukkan jumlah bayar" oninput="hitungKembalian()" required>
+
+        <label class="mt-2">Kembalian (Rp)</label>
+        <input type="text" name="kembalian" id="kembalian" class="form-control" readonly>
+      </div>
+
+
       <button type="submit" class="btn-glow">Selesaikan Transaksi</button>
     </form>
   </div>
@@ -301,6 +326,16 @@
       document.getElementById('splitContainer').style.display = split ? 'block' : 'none';
       document.getElementById('metodeSingleContainer').style.display = split ? 'none' : 'block';
     }
+
+        function hitungKembalian() {
+      const total = parseFloat(document.getElementById('totalInput').value) || 0;
+      const bayar = parseFloat(document.getElementById('jumlahBayar').value) || 0;
+      const kembalian = bayar - total;
+
+      const kembalianInput = document.getElementById('kembalian');
+      kembalianInput.value = kembalian > 0 ? kembalian.toLocaleString('id-ID') : '0';
+    }
+
   </script>
 </body>
 </html>

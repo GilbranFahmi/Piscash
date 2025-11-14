@@ -9,15 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
-{
-    Schema::create('kasirs', function (Blueprint $table) {
-       $table->unsignedBigInteger('kasir_id')->nullable()->change();    
-        $table->string('nama');
-        $table->string('username')->unique();
-        $table->string('password');
-        $table->timestamps();
-    });
+    public function up(): void
+    {
+        Schema::create('kasirs', function (Blueprint $table) {
+            $table->id(); // Kolom utama untuk relasi
+            $table->string('nama');
+            $table->string('username')->unique();
+            $table->string('password');
+            $table->timestamps();
+        });
     }
 
     /**

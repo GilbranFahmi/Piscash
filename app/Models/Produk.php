@@ -9,13 +9,14 @@ class Produk extends Model
 {
     use HasFactory;
 
-    protected $table = 'produks'; // atau nama tabel kamu
+    protected $table = 'produks';
 
     protected $fillable = [
         'nama_produk',
         'harga',
         'kategori_id',
         'stok',
+        'gambar',   // ← WAJIB!! kalau ga ada, kolom gambar jadi NULL
     ];
 
     public function kategori()

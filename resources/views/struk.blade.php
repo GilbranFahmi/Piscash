@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Struk Transaksi - Pisces Accessories</title>
+
+  <!-- Bootstrap & Fonts -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
     body {
       background: #05061a;
@@ -13,6 +16,7 @@
       font-family: 'Poppins', sans-serif;
       padding: 40px;
     }
+
     .struk-container {
       background: rgba(5,10,25,0.85);
       box-shadow: 0 0 15px #58d6ff55;
@@ -21,14 +25,17 @@
       margin: auto;
       padding: 30px;
     }
+
     h4 {
       font-family: 'Great Vibes', cursive;
       color: #58d6ff;
       text-shadow: 0 0 12px #58d6ff;
     }
+
     th {
       color: #ff6ba3;
     }
+
     button {
       background: linear-gradient(90deg, #FF3484, #56CCF2);
       border: none;
@@ -39,21 +46,28 @@
       font-weight: bold;
       box-shadow: 0 0 12px #56CCF2;
     }
+
     button:hover {
       transform: scale(1.05);
       box-shadow: 0 0 18px #56CCF2;
     }
+
+    hr {
+      border-color: rgba(255,255,255,0.1);
+    }
+
     @media print {
       button { display: none; }
       body { background: white; color: black; }
       .struk-container { box-shadow: none; background: white; color: black; }
+      th { color: black !important; }
     }
   </style>
 </head>
 <body>
 
   <div class="struk-container">
-    <h4 class="text-center mb-3">Pisces Accesories</h4>
+    <h4 class="text-center mb-3">Pisces Accessories</h4>
 
     <p><strong>ID Transaksi:</strong> #{{ $transaksi->id }}</p>
     <p><strong>Tanggal:</strong> {{ $transaksi->created_at->format('d M Y H:i') }}</p>
@@ -61,6 +75,7 @@
 
     <hr>
 
+    <!-- Daftar Produk -->
     <table class="table table-dark table-bordered text-center align-middle">
       <thead>
         <tr>
@@ -84,16 +99,27 @@
       </tbody>
     </table>
 
-    <h5 class="text-end mt-3">
-      Total: Rp{{ number_format($transaksi->total_harga, 0, ',', '.') }}
-    </h5>
+    <!-- Total, Jumlah Bayar, dan Kembalian -->
+    <div class="mt-4">
+      <h5 class="text-end">Total: Rp{{ number_format($transaksi->total_harga, 0, ',', '.') }}</h5>
+      <h6 class="text-end text-success">
+        Jumlah Bayar: Rp{{ number_format($transaksi->jumlah_bayar ?? 0, 0, ',', '.') }}
+      </h6>
+      <h6 class="text-end text-warning">
+        Kembalian: Rp{{ number_format($transaksi->kembalian ?? 0, 0, ',', '.') }}
+      </h6>
+    </div>
 
+    <hr>
+
+    <!-- QR Code -->
     <div class="text-center mt-3">
       <img 
         src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Transaksi%20{{ $transaksi->id }}%20-%20Total%20Rp{{ $transaksi->total_harga }}" 
         alt="QR Code" 
         style="width:130px;">
       <p style="font-size:0.9em;opacity:0.8;">Scan untuk detail transaksi</p>
+
       <button onclick="window.print()">Cetak Struk</button>
     </div>
   </div>

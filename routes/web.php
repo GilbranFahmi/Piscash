@@ -48,6 +48,8 @@ Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi
 Route::post('/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
 Route::get('/struk/{id}', [TransaksiController::class, 'show'])->name('struk.show');
 
+Route::put('/produk/{id}', [ProdukController::class, 'update'])->name('produk.update');
+
     Route::get('/riwayat', function () {
         return view('history');
     });

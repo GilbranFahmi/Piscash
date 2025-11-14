@@ -43,7 +43,7 @@
 </head>
 <body>
   <div class="login-box">
-    <h2>Kasir Pisces</h2>
+    <h2>Piscash</h2>
 
     @if(session('error'))
         <div class="alert alert-danger text-center">{{ session('error') }}</div>
