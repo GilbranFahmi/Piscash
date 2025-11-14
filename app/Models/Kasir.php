@@ -13,15 +13,18 @@ class Kasir extends Model
         'nama',
         'username',
         'password',
+        'drawer_id',
     ];
     
     public function transaksis() {
         return $this->hasMany(Transaksi::class);
     }
 
-    public function openDrawers() {
-        return $this->hasMany(OpenDrawer::class);
-    }
+    public function drawer()
+{
+    return $this->belongsTo(OpenDrawer::class, 'drawer_id');
+}
+
 
     public function closeDrawers() {
         return $this->hasMany(CloseDrawer::class);

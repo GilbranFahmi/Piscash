@@ -5,7 +5,7 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TransaksiController;
-
+use App\Http\Controllers\OpenDrawerController;
 
 // Default: arahkan ke login kalau belum login
 Route::get('/', function () {
@@ -53,4 +53,9 @@ Route::put('/produk/{id}', [ProdukController::class, 'update'])->name('produk.up
     Route::get('/riwayat', function () {
         return view('history');
     });
+
+  Route::get('/open-drawer', [OpenDrawerController::class, 'index'])->name('open-drawer.index');
+Route::post('/open-drawer', [OpenDrawerController::class, 'store'])->name('open-drawer.store');
+
+
 

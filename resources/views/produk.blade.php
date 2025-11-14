@@ -21,28 +21,28 @@
     }
 
     /* Navbar */
-    .navbar {
-      background: rgba(5, 6, 26, 0.85);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
+.navbar {
+  background: rgba(5, 6, 26, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
 
-    .navbar-brand {
-      font-family: 'Great Vibes', cursive;
-      font-size: 1.8rem;
-      color: #b3e9ff !important;
-      text-shadow: 0 0 10px #58d6ff, 0 0 20px #58d6ff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+.navbar-brand {
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.8rem;
+  color: #b3e9ff !important;
+  text-shadow: 0 0 10px #58d6ff, 0 0 20px #58d6ff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-    .logo-img {
-      height: 35px;
-      width: auto;
-    }
+.logo-img {
+  height: 35px;
+  width: auto;
+}
 
-    .nav-link {
+.nav-link {
   color: #56CCF2 !important;
   font-weight: 500;
   margin: 0 8px;
@@ -55,7 +55,7 @@
   text-shadow: 0 0 8px #FF3484;
 }
 
-   .nav-link:hover {
+.nav-link:hover {
   color: #FF3484 !important;
   text-shadow: 0 0 8px #FF3484;
 }
@@ -63,24 +63,34 @@
 .nav-link.active:hover {
   color: #56CCF2 !important;
   text-shadow: 0 0 8px #56CCF2;
-} 
-    .navbar-toggler {
-      border: none;
-      background: transparent;
-    }
+}
 
-    .navbar-toggler-icon {
-      background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255,0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-    }
+.navbar-toggler {
+  border: none;
+  background: transparent;
+}
 
-    .btn-logout {
-    padding: 8px 28px;
-    border-radius: 40px;
-    font-weight: 600;
-    border: 2px solid #ff2d75;
-    background: transparent;
-    color: #ff2d75;
-    transition: 0.3s ease-in-out;
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255,0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Logout button */
+.btn-logout {
+  padding: 8px 28px;
+  border-radius: 40px;
+  font-weight: 600;
+  border: 2px solid #ff2d75;
+  background: transparent;
+  color: #ff2d75;
+  transition: 0.3s ease-in-out;
+}
+
+.btn-logout:hover {
+  background: linear-gradient(90deg, #ff2d75, #56ccf2);
+  color: #fff !important;
+  border-color: transparent;
+  box-shadow: 0 0 18px rgba(86, 204, 242, 0.7);
+  transform: scale(1.05);
 }
 
 /* Hover: gradient glowing */

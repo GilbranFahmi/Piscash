@@ -10,8 +10,9 @@ class AuthSession
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Session::has('kasir')) {
-            return redirect('/login');
+        if (!Session::has('kasir_id')) {
+            return redirect('/login')
+                ->with('error', 'Silakan login terlebih dahulu.');
         }
 
         return $next($request);
