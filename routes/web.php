@@ -57,5 +57,16 @@ Route::put('/produk/{id}', [ProdukController::class, 'update'])->name('produk.up
   Route::get('/open-drawer', [OpenDrawerController::class, 'index'])->name('open-drawer.index');
 Route::post('/open-drawer', [OpenDrawerController::class, 'store'])->name('open-drawer.store');
 
+// Close Drawer
+use App\Http\Controllers\CloseDrawerController;
+
+Route::middleware(['web'])->group(function () {
+    Route::get('/close-drawer', [CloseDrawerController::class, 'index'])->name('close-drawer.index');
+    Route::post('/close-drawer', [CloseDrawerController::class, 'store'])->name('close-drawer.store');
+});
+
+Route::get('/riwayat-drawer', [CloseDrawerController::class, 'history'])
+     ->name('drawer.history');
+
 
 

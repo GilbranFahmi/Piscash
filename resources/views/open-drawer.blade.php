@@ -192,7 +192,7 @@
           <p><strong>Waktu Dibuka:</strong> {{ $waktu_buka ?? '-' }}</p>
         </div>
         <div class="col-md-6">
-          <p><strong>Saldo Awal Drawer:</strong> Rp {{ number_format($saldo_awal ?? 0,0,',','.') }}</p>
+          <p><strong>Modal Awal:</strong> Rp {{ number_format($saldo_awal ?? 0,0,',','.') }}</p>
           <p><strong>Status:</strong> <span class="text-success">Aktif</span></p>
         </div>
       </div>

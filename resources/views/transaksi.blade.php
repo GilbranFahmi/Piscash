@@ -327,14 +327,17 @@
       document.getElementById('metodeSingleContainer').style.display = split ? 'none' : 'block';
     }
 
-        function hitungKembalian() {
-      const total = parseFloat(document.getElementById('totalInput').value) || 0;
-      const bayar = parseFloat(document.getElementById('jumlahBayar').value) || 0;
-      const kembalian = bayar - total;
+     function hitungKembalian() {
+  const total = parseFloat(document.getElementById('totalInput').value) || 0;
+  const bayar = parseFloat(document.getElementById('jumlahBayar').value) || 0;
+  const kembalian = bayar - total;
 
-      const kembalianInput = document.getElementById('kembalian');
-      kembalianInput.value = kembalian > 0 ? kembalian.toLocaleString('id-ID') : '0';
-    }
+  const kembalianInput = document.getElementById('kembalian'); // untuk DB (angka murni)
+  const kembalianDisplay = document.getElementById('kembalianDisplay'); // untuk UI
+
+  kembalianInput.value = kembalian > 0 ? kembalian : 0;
+  kembalianDisplay.value = kembalian > 0 ? kembalian.toLocaleString('id-ID') : "0";
+} 
 
   </script>
 </body>

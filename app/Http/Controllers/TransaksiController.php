@@ -68,13 +68,16 @@ class TransaksiController extends Controller
         DB::beginTransaction();
         try {
             // Simpan transaksi utama
-            $transaksi = Transaksi::create([
-                'kasir_id' => $kasirId,
-                'kode_qr' => uniqid('TRX-'),
-                'total_harga' => $total,
-                'jumlah_bayar' => $bayar,
-                'kembalian' => $bayar - $total,
-            ]);
+$transaksi = Transaksi::create([
+    'kasir_id' => $kasirId,
+    'kode_qr' => uniqid('TRX-'),
+    'total_harga' => $total,
+
+    // FIX PEMBAYARAN
+    'jumlah_bayar'  => (int) str_replace('.', '', $request->jumlah_bayar),
+    'kembalian'     => (int) str_replace('.', '', $request->kembalian),
+]);
+
 
             // Simpan produk yang dibeli + update stok
             foreach ($request->produk_id as $index => $produkId) {
