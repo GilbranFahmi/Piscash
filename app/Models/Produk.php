@@ -16,11 +16,16 @@ class Produk extends Model
         'harga',
         'kategori_id',
         'stok',
-        'gambar',   // ← WAJIB!! kalau ga ada, kolom gambar jadi NULL
+        'gambar',
     ];
 
     public function kategori()
     {
         return $this->belongsTo(KategoriProduk::class);
+    }
+
+    public function detailTransaksis()
+    {
+        return $this->hasMany(DetailTransaksi::class, 'produk_id');
     }
 }

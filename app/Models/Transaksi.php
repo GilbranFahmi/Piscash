@@ -9,14 +9,20 @@ class Transaksi extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kasir_id', 'kode_qr', 'total_harga'];
+    protected $fillable = [
+        'kasir_id',
+        'kode_qr',
+        'total_harga',
+        'jumlah_bayar',   // ← TAMBAH
+        'kembalian',       // ← TAMBAH
+    ];
 
     public function kasir() {
         return $this->belongsTo(Kasir::class);
     }
 
     public function detailTransaksis() {
-        return $this->hasMany(DetailTransaksi::class);
+        return $this->hasMany(DetailTransaksi::class, 'transaksi_id');
     }
 
     public function riwayat() {

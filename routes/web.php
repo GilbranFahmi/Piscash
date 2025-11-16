@@ -68,5 +68,11 @@ Route::middleware(['web'])->group(function () {
 Route::get('/riwayat-drawer', [CloseDrawerController::class, 'history'])
      ->name('drawer.history');
 
+     // Riwayat halaman utama
+Route::get('/riwayat', [App\Http\Controllers\RiwayatController::class, 'index'])->name('riwayat.index');
+
+// AJAX detail transaksi
+Route::get('/riwayat/detail/{id}', [App\Http\Controllers\RiwayatController::class, 'detail']);
+
 
 
