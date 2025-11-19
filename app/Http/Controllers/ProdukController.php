@@ -83,6 +83,7 @@ class ProdukController extends Controller
             'harga' => $request->harga,
             'stok' => $request->stok,
             'gambar' => $produk->gambar,
+             'kategori_id'  => $request->kategori_id,
         ]);
 
         return redirect()->back()->with('success', 'Produk berhasil diperbarui!');

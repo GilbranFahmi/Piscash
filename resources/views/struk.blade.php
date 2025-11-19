@@ -62,6 +62,37 @@
       .struk-container { box-shadow: none; background: white; color: black; }
       th { color: black !important; }
     }
+
+  /* Tombol Back — di luar container */
+.btn-back {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: transparent;
+  border: 2px solid #56CCF2;
+  color: #56CCF2;
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  z-index: 9999;
+  box-shadow: 0 0 12px #56CCF2;
+  transition: 0.3s;
+}
+
+.btn-back:hover {
+  background: #56CCF2;
+  color: #000;
+  transform: scale(1.05);
+}
+
+/* Hide tombol saat print */
+@media print {
+  .btn-back {
+    display: none !important;
+  }
+}
+
+
   </style>
 </head>
 <body>
@@ -114,6 +145,7 @@
 
     <!-- QR Code -->
     <div class="text-center mt-3">
+
       <img 
         src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Transaksi%20{{ $transaksi->id }}%20-%20Total%20Rp{{ $transaksi->total_harga }}" 
         alt="QR Code" 
@@ -125,4 +157,8 @@
   </div>
 
 </body>
+<button class="btn-back" onclick="window.location.href='/transaksi'">
+  ← Kembali ke Transaksi
+</button>
+
 </html>

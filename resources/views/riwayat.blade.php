@@ -139,34 +139,11 @@ h2 {
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="/home">
-        <img src="{{ asset('images/logo5.png') }}" alt="Logo" class="logo-img">
-        Pisces Accessories
-      </a>
+@extends('layouts.main')
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+@section('title', 'Produk')
 
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-       <ul class="navbar-nav align-items-center me-3">
-          <li class="nav-item"><a href="/home" class="nav-link">Home</a></li>
-          <li class="nav-item"><a href="/produk" class="nav-link active">Produk</a></li>
-          <li class="nav-item"><a href="/transaksi" class="nav-link">Transaksi</a></li>
-          <li class="nav-item"><a href="/riwayat" class="nav-link active">Riwayat</a></li>
-          <li class="nav-item"><a href="/kategori" class="nav-link">Kategori</a></li>
-          <li class="nav-item"><a href="/open-drawer" class="nav-link active">Open Drawer</a></li>
-          <li class="nav-item"><a href="/close-drawer" class="nav-link">Close Drawer</a></li>
-        </ul>
-
-        <form action="{{ route('logout') }}" method="GET">
-          <button type="submit" class="btn btn-logout">Logout</button>
-        </form>
-      </div>
-    </div>
-</nav>
+@section('content')
 
 <div class="container">
 
@@ -282,7 +259,7 @@ h2 {
         });
     }
 </script>
-
+@endsection
 
 </body>
 </html>

@@ -38,16 +38,28 @@
     }
 
     .nav-link {
-      color: #56CCF2 !important;
-      font-weight: 500;
-      margin: 0 8px;
-      text-shadow: 0 0 6px #56CCF2;
-    }
+  color: #56CCF2 !important;
+  font-weight: 500;
+  margin: 0 8px;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 6px #56CCF2;
+}
 
-    .nav-link.active {
-      color: #FF3484 !important;
-      text-shadow: 0 0 8px #FF3484;
-    }
+.nav-link.active {
+  color: #FF3484 !important;
+  text-shadow: 0 0 8px #FF3484;
+}
+
+.nav-link:hover {
+  color: #FF3484 !important;
+  text-shadow: 0 0 8px #FF3484;
+}
+
+.nav-link.active:hover {
+  color: #56CCF2 !important;
+  text-shadow: 0 0 8px #56CCF2;
+}
+
 
     .btn-logout {
       padding: 8px 28px;
@@ -85,46 +97,48 @@
       box-shadow: 0 0 8px #58d6ff88;
     }
 
+    .neon-alert {
+    border-radius: 10px;
+    font-weight: 600;
+    box-shadow: 0 0 12px rgba(88,214,255,0.5);
+    margin-bottom: 25px;
+}
+
+
   </style>
 </head>
 
 <body>
 
-<nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="/home">
-        <img src="{{ asset('images/logo5.png') }}" alt="Logo" class="logo-img">
-        Pisces Accessories
-      </a>
+@extends('layouts.main')
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+@section('title', 'Produk')
 
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav align-items-center me-3">
-          <li class="nav-item"><a href="/home" class="nav-link">Home</a></li>
-          <li class="nav-item"><a href="/produk" class="nav-link active">Produk</a></li>
-          <li class="nav-item"><a href="/transaksi" class="nav-link">Transaksi</a></li>
-          <li class="nav-item"><a href="/riwayat" class="nav-link">Riwayat</a></li>
-          <li class="nav-item"><a href="/kategori" class="nav-link">Kategori</a></li>
-          <li class="nav-item"><a href="/open-drawer" class="nav-link">Open Drawer</a></li>
-          <li class="nav-item"><a href="/close-drawer" class="nav-link">Close Drawer</a></li>
-        </ul>
+@section('content')
 
-        <form action="{{ route('logout') }}" method="GET">
-          <button type="submit" class="btn btn-logout">Logout</button>
-        </form>
-      </div>
-    </div>
-</nav>
+
 
 <div class="container mt-5">
     <h2 class="text-center mb-4" style="font-family:'Great Vibes',cursive;color:#58d6ff;">Kelola Produk</h2>
 
-    @if(session('success'))
-      <div class="alert alert-success text-center">{{ session('success') }}</div>
-    @endif
+<!-- ALERT NOTIFIKASI -->
+@if(session('success'))
+    <div class="alert alert-success neon-alert text-center" id="autoAlert">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger neon-alert text-center" id="autoAlert">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if(session('warning'))
+    <div class="alert alert-warning neon-alert text-center" id="autoAlert">
+        {{ session('warning') }}
+    </div>
+@endif
 
     <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" class="mb-4">
       @csrf
@@ -230,6 +244,18 @@
                   </div>
 
                   <div class="mb-3">
+    <label>Kategori</label>
+    <select name="kategori_id" class="form-select" required>
+        @foreach($kategori as $k)
+            <option value="{{ $k->id }}" 
+                {{ $p->kategori_id == $k->id ? 'selected' : '' }}>
+                {{ $k->nama_kategori }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
+                  <div class="mb-3">
                     <label>Harga</label>
                     <input type="number" name="harga" value="{{ $p->harga }}" class="form-control" required>
                   </div>
@@ -262,6 +288,20 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    setTimeout(() => {
+        const alertBox = document.getElementById('autoAlert');
+        if (alertBox) {
+            alertBox.style.transition = "opacity 0.5s";
+            alertBox.style.opacity = "0";
+
+            setTimeout(() => alertBox.remove(), 600);
+        }
+    }, 3000);
+</script>
+
+@endsection
 
 </body>
 </html>

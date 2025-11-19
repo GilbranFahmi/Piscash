@@ -34,19 +34,28 @@
     }
 
     .logo-img { height: 35px; width: auto; }
+.nav-link {
+  color: #56CCF2 !important;
+  font-weight: 500;
+  margin: 0 8px;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 6px #56CCF2;
+}
 
-    .nav-link {
-      color: #56CCF2 !important;
-      font-weight: 500;
-      margin: 0 8px;
-      transition: all 0.3s ease;
-      text-shadow: 0 0 6px #56CCF2;
-    }
+.nav-link.active {
+  color: #FF3484 !important;
+  text-shadow: 0 0 8px #FF3484;
+}
 
-    .nav-link.active {
-      color: #FF3484 !important;
-      text-shadow: 0 0 8px #FF3484;
-    }
+.nav-link:hover {
+  color: #FF3484 !important;
+  text-shadow: 0 0 8px #FF3484;
+}
+
+.nav-link.active:hover {
+  color: #56CCF2 !important;
+  text-shadow: 0 0 8px #56CCF2;
+}
 
     .btn-logout {
       padding: 8px 28px;
@@ -114,29 +123,11 @@
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg fixed-top">
-  <div class="container">
-    <a class="navbar-brand" href="/home">
-      <img src="{{ asset('images/logo5.png') }}" class="logo-img"> Pisces Accessories
-    </a>
+@extends('layouts.main')
 
-    <div class="collapse navbar-collapse justify-content-end">
-      <ul class="navbar-nav align-items-center me-3">
-        <li class="nav-item"><a href="/home" class="nav-link">Home</a></li>
-        <li class="nav-item"><a href="/produk" class="nav-link">Produk</a></li>
-        <li class="nav-item"><a href="/transaksi" class="nav-link">Transaksi</a></li>
-        <li class="nav-item"><a href="/riwayat" class="nav-link">Riwayat</a></li>
-        <li class="nav-item"><a href="/kategori" class="nav-link">Kategori</a></li>
-        <li class="nav-item"><a href="/open-drawer" class="nav-link">Open Drawer</a></li>
-        <li class="nav-item"><a href="/close-drawer" class="nav-link active">Close Drawer</a></li>
-      </ul>
+@section('title', 'Produk')
 
-      <form action="{{ route('logout') }}" method="GET">
-        <button class="btn-logout">Logout</button>
-      </form>
-    </div>
-  </div>
-</nav>
+@section('content')
 
 <!-- TITLE -->
 <h2 class="text-center mt-3" style="font-family:'Great Vibes'; color:#58d6ff; text-shadow:0 0 15px #58d6ff; font-size:2.7rem;">
@@ -259,6 +250,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+@endsection
 
 </body>
 </html>

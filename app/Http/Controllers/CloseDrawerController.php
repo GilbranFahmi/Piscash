@@ -91,13 +91,12 @@ class CloseDrawerController extends Controller
 
         // simpan close drawer LENGKAP (untuk riwayat)
         CloseDrawer::create([
-            'kasir_id'     => $kasirId,
-            'waktu_tutup'  => Carbon::now(),
-            'saldo_awal'   => $saldo_awal,
-            'uang_masuk'   => $total_masuk,
-            'uang_keluar'  => $uang_keluar,
-            'saldo_akhir'  => $saldo_akhir,
-        ]);
+    'kasir_id'   => $kasirId,
+    'waktu_tutup'=> now(),
+    'saldo_awal' => $saldo_awal,
+    'saldo_akhir'=> $saldo_akhir,
+]);
+
 
         // MODE C → open drawer dianggap selesai
         $drawer->delete();

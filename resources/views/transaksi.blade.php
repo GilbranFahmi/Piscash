@@ -112,6 +112,7 @@
       color: white;
       font-weight: 600;
       padding: 10px 20px;
+      margin-top: 15px;  
       transition: 0.3s;
       width: 100%;
       box-shadow: 0 0 15px rgba(88,214,255,0.6);
@@ -141,38 +142,36 @@
     hr {
       border-color: rgba(255,255,255,0.1);
     }
+
+    .close-produk-btn {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(90deg,#ff5a8b,#56ccf2);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(86,204,242,0.12);
+  cursor: pointer;
+  z-index: 5;
+}
+.close-produk-btn:hover { transform: scale(1.05); }
+
   </style>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="/home">
-        <img src="{{ asset('images/logo5.png') }}" alt="Logo" class="logo-img">
-        Pisces Accessories
-      </a>
+@extends('layouts.main')
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+@section('title', 'Produk')
 
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav align-items-center me-3">
-          <li class="nav-item"><a href="/home" class="nav-link">Home</a></li>
-          <li class="nav-item"><a href="/produk" class="nav-link active">Produk</a></li>
-          <li class="nav-item"><a href="/transaksi" class="nav-link">Transaksi</a></li>
-          <li class="nav-item"><a href="/riwayat" class="nav-link active">Riwayat</a></li>
-          <li class="nav-item"><a href="/kategori" class="nav-link">Kategori</a></li>
-          <li class="nav-item"><a href="/open-drawer" class="nav-link active">Open Drawer</a></li>
-          <li class="nav-item"><a href="/close-drawer" class="nav-link">Close Drawer</a></li>
-        </ul>
-
-        <form action="{{ route('logout') }}" method="GET">
-          <button type="submit" class="btn btn-logout">Logout</button>
-        </form>
-      </div>
-    </div>
-  </nav>
+@section('content')
 
   <div class="container-transaksi">
     <h2>🛍️ Transaksi</h2>
@@ -196,35 +195,37 @@
       @csrf
 
       <!-- Produk Dinamis -->
-      <div id="produkList">
-        <div class="produk-item">
-          <label>Kategori Produk</label>
-          <select class="form-select kategori" onchange="filterProduk(this)" required>
-            <option value="">-- Pilih Kategori --</option>
-            @foreach($kategori as $k)
-              <option value="{{ $k->id }}">{{ $k->nama_kategori }}</option>
-            @endforeach
-          </select>
+     <div id="produkList">
+  <div class="produk-item position-relative">
+    <!-- PRODUK PERTAMA: TIDAK ADA TOMBOL X -->
+    <label>Kategori Produk</label>
+    <select class="form-select kategori" onchange="filterProduk(this)" required>
+      <option value="">-- Pilih Kategori --</option>
+      @foreach($kategori as $k)
+        <option value="{{ $k->id }}">{{ $k->nama_kategori }}</option>
+      @endforeach
+    </select>
 
-          <label>Nama Produk</label>
-          <select name="produk_id[]" class="form-select produk" onchange="updateHarga(this)" required>
-            <option value="">-- Pilih Produk --</option>
-            @foreach($produks as $p)
-              <option value="{{ $p->id }}" data-kategori="{{ $p->kategori_id }}" data-harga="{{ $p->harga }}">
-                {{ $p->nama_produk }}
-              </option>
-            @endforeach
-          </select>
+    <label>Nama Produk</label>
+    <select name="produk_id[]" class="form-select produk" onchange="updateHarga(this)" required>
+      <option value="">-- Pilih Produk --</option>
+      @foreach($produks as $p)
+        <option value="{{ $p->id }}" data-kategori="{{ $p->kategori_id }}" data-harga="{{ $p->harga }}">
+          {{ $p->nama_produk }}
+        </option>
+      @endforeach
+    </select>
 
-          <label>Harga (Rp)</label>
-          <input type="text" class="form-control harga" readonly>
+    <label>Harga (Rp)</label>
+    <input type="text" class="form-control harga" readonly>
 
-          <label>Jumlah</label>
-          <input type="number" name="jumlah[]" class="form-control jumlah" value="1" min="1" oninput="updateTotal()">
+    <label>Jumlah</label>
+    <input type="number" name="jumlah[]" class="form-control jumlah" value="1" min="1" oninput="updateTotal()">
 
-          <input type="hidden" name="subtotal[]" class="subtotal">
-        </div>
-      </div>
+    <input type="hidden" name="subtotal[]" class="subtotal">
+  </div>
+</div>
+
 
       <button type="button" class="btn-glow mt-2" onclick="tambahProduk()">+ Tambah Produk</button>
 
@@ -283,62 +284,158 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <script>
-    function filterProduk(select) {
-      const kategoriId = select.value;
-      const produkSelect = select.parentElement.querySelector('.produk');
-      produkSelect.querySelectorAll('option').forEach(opt => {
+<script>
+/* ============================
+   FILTER PRODUK BERDASARKAN KATEGORI
+============================ */
+function filterProduk(select) {
+    const kategoriId = select.value;
+    const produkSelect = select.parentElement.querySelector('.produk');
+
+    produkSelect.querySelectorAll('option').forEach(opt => {
         if (!opt.value) return;
         opt.style.display = opt.dataset.kategori === kategoriId ? 'block' : 'none';
-      });
-    }
+    });
+}
 
-    function updateHarga(select) {
-      const harga = select.selectedOptions[0]?.dataset.harga || 0;
-      const hargaInput = select.parentElement.querySelector('.harga');
-      hargaInput.value = harga;
-      updateTotal();
-    }
 
-    function updateTotal() {
-      let total = 0;
-      document.querySelectorAll('.produk-item').forEach(item => {
+/* ============================
+   UPDATE HARGA PRODUK SAAT DIPILIH
+============================ */
+function updateHarga(select) {
+    const harga = select.selectedOptions[0]?.dataset.harga || 0;
+    const hargaInput = select.parentElement.querySelector('.harga');
+    hargaInput.value = harga;
+    updateTotal();
+}
+
+
+/* ============================
+   HITUNG TOTAL
+============================ */
+function updateTotal() {
+    let total = 0;
+    document.querySelectorAll('.produk-item').forEach(item => {
         const harga = parseFloat(item.querySelector('.harga').value) || 0;
         const jumlah = parseInt(item.querySelector('.jumlah').value) || 1;
         const subtotal = harga * jumlah;
+
         item.querySelector('.subtotal').value = subtotal;
         total += subtotal;
-      });
-      document.getElementById('totalInput').value = total;
-      document.getElementById('totalTampil').textContent = total.toLocaleString('id-ID');
+    });
+
+    document.getElementById('totalInput').value = total;
+    document.getElementById('totalTampil').textContent = total.toLocaleString('id-ID');
+}
+
+
+/* ============================
+   HITUNG KEMBALIAN (UI + DB)
+============================ */
+function hitungKembalian() {
+    const total = parseFloat(document.getElementById('totalInput').value) || 0;
+    const bayar = parseFloat(document.getElementById('jumlahBayar').value) || 0;
+    const kembalian = bayar - total;
+
+    document.getElementById('kembalian').value = kembalian > 0 ? kembalian : 0;
+}
+
+
+/* ============================
+   BUAT TOMBOL X
+============================ */
+function createCloseButton() {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'close-produk-btn';
+    btn.innerHTML = '&times;';
+    btn.addEventListener('click', () => hapusProduk(btn));
+    return btn;
+}
+
+
+/* ============================
+   HAPUS PRODUK
+============================ */
+function hapusProduk(button) {
+    const item = button.closest('.produk-item');
+    const container = document.getElementById('produkList');
+
+    if (container.children.length <= 1) {
+        alert('Minimal 1 produk harus ada dalam transaksi.');
+        return;
     }
 
-    function tambahProduk() {
-      const produkList = document.getElementById('produkList');
-      const clone = produkList.firstElementChild.cloneNode(true);
-      clone.querySelectorAll('input').forEach(inp => inp.value = inp.type === 'number' ? 1 : '');
-      clone.querySelector('.produk').selectedIndex = 0;
-      produkList.appendChild(clone);
+    item.remove();
+    updateTotal();
+}
+
+
+/* ============================
+   TAMBAH PRODUK (+)
+============================ */
+function tambahProduk() {
+    const produkList = document.getElementById('produkList');
+    const prototype = produkList.firstElementChild;
+    const clone = prototype.cloneNode(true);
+
+    // reset clone
+    clone.querySelectorAll('input').forEach(inp => {
+        if (inp.type === 'number') inp.value = 1;
+        else inp.value = '';
+    });
+    clone.querySelectorAll('select').forEach(sel => sel.selectedIndex = 0);
+    clone.querySelector('.harga').value = '';
+    clone.querySelector('.subtotal').value = '';
+
+    // tambahkan X hanya untuk clone
+    if (!clone.querySelector('.close-produk-btn')) {
+        const closeBtn = createCloseButton();
+        clone.classList.add('position-relative');
+        clone.appendChild(closeBtn);
     }
 
-    function toggleSplit() {
-      const split = document.getElementById('splitBillCheck').checked;
-      document.getElementById('splitContainer').style.display = split ? 'block' : 'none';
-      document.getElementById('metodeSingleContainer').style.display = split ? 'none' : 'block';
-    }
+    // bind ulang event untuk clone
+    clone.querySelector('.produk').addEventListener('change', function() {
+        updateHarga(this);
+    });
+    clone.querySelector('.kategori').addEventListener('change', function() {
+        filterProduk(this);
+    });
+    clone.querySelector('.jumlah').addEventListener('input', updateTotal);
 
-     function hitungKembalian() {
-  const total = parseFloat(document.getElementById('totalInput').value) || 0;
-  const bayar = parseFloat(document.getElementById('jumlahBayar').value) || 0;
-  const kembalian = bayar - total;
+    produkList.appendChild(clone);
+    updateTotal();
+}
 
-  const kembalianInput = document.getElementById('kembalian'); // untuk DB (angka murni)
-  const kembalianDisplay = document.getElementById('kembalianDisplay'); // untuk UI
 
-  kembalianInput.value = kembalian > 0 ? kembalian : 0;
-  kembalianDisplay.value = kembalian > 0 ? kembalian.toLocaleString('id-ID') : "0";
-} 
+/* ============================
+   INISIALISASI (PAGE LOAD)
+============================ */
+function initRemoveButtons() {
+    const items = document.querySelectorAll('#produkList .produk-item');
 
-  </script>
+    items.forEach((item, index) => {
+        const hasClose = item.querySelector('.close-produk-btn');
+
+        if (index === 0) {
+            // produk pertama tidak boleh ada tombol X
+            if (hasClose) hasClose.remove();
+        } else {
+            if (!hasClose) {
+                const closeBtn = createCloseButton();
+                item.classList.add('position-relative');
+                item.appendChild(closeBtn);
+            }
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initRemoveButtons();
+    updateTotal();
+});
+</script>
+
 </body>
 </html>
