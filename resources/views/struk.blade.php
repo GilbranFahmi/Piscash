@@ -63,7 +63,7 @@
       th { color: black !important; }
     }
 
-  /* Tombol Back — di luar container */
+
 .btn-back {
   position: fixed;
   top: 20px;
@@ -85,7 +85,6 @@
   transform: scale(1.05);
 }
 
-/* Hide tombol saat print */
 @media print {
   .btn-back {
     display: none !important;
@@ -106,7 +105,7 @@
 
     <hr>
 
-    <!-- Daftar Produk -->
+  
     <table class="table table-dark table-bordered text-center align-middle">
       <thead>
         <tr>
@@ -130,7 +129,7 @@
       </tbody>
     </table>
 
-    <!-- Total, Jumlah Bayar, dan Kembalian -->
+  
     <div class="mt-4">
       <h5 class="text-end">Total: Rp{{ number_format($transaksi->total_harga, 0, ',', '.') }}</h5>
       <h6 class="text-end text-success">
@@ -143,7 +142,6 @@
 
     <hr>
 
-    <!-- QR Code -->
     <div class="text-center mt-3">
 
       <img 

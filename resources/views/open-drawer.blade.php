@@ -17,8 +17,7 @@
       padding-top: 100px;
     }
 
-    /* NAVBAR */
-    /* NAVBAR */
+   
 .navbar {
   background: rgba(5, 6, 26, 0.85);
   backdrop-filter: blur(8px);
@@ -69,7 +68,6 @@
   text-shadow: 0 0 8px #FF3484;
 }
 
-    /* Logout button */
   .btn-logout {
   padding: 8px 28px;
   border-radius: 40px;
@@ -87,7 +85,6 @@
   transform: scale(1.05);
 }
 
-    /* Info Card */
     .drawer-card {
       background: rgba(10, 15, 40, 0.7);
       padding: 25px;
@@ -96,7 +93,7 @@
       box-shadow: 0 0 18px rgba(88,214,255,0.3);
     }
 
-    /* Glow Button */
+
     .btn-glow {
       background: linear-gradient(90deg, #FF3484, #56CCF2);
       color: white;
@@ -198,19 +195,17 @@
 <tr>
     <td>{{ $loop->iteration }}</td>
 
-    <!-- ID Transaksi -->
+
     <td>{{ $t->kode_qr }}</td>
 
-    <!-- Tanggal -->
+
     <td>{{ \Carbon\Carbon::parse($t->created_at)->format('Y-m-d') }}</td>
 
-    <!-- Waktu (WIB) -->
     <td>{{ \Carbon\Carbon::parse($t->created_at)->setTimezone('Asia/Jakarta')->format('H:i') }}</td>
 
-    <!-- Nama Kasir -->
+
     <td>{{ $t->kasir->nama }}</td>
 
-    <!-- Total Harga -->
     <td>Rp{{ number_format($t->total_harga, 0, ',', '.') }}</td>
 </tr>
 @endforeach

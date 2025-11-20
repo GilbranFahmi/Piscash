@@ -9,9 +9,7 @@ use App\Models\Kasir;
 
 class AuthController extends Controller
 {
-    /**
-     * Menampilkan halaman login
-     */
+    
     public function showLogin()
     {
         if (Session::has('kasir_id')) {
@@ -20,17 +18,13 @@ class AuthController extends Controller
         return view('login');
     }
 
-    /**
-     * Menampilkan halaman register
-     */
+
     public function showRegister()
     {
         return view('register');
     }
 
-    /**
-     * Proses pembuatan akun kasir baru
-     */
+   
     public function register(Request $request)
     {
         $request->validate([
@@ -48,9 +42,7 @@ class AuthController extends Controller
         return redirect('/login')->with('success', 'Akun berhasil dibuat! Silakan login.');
     }
 
-    /**
-     * Proses login kasir
-     */
+    
     public function login(Request $request)
     {
         $request->validate([
@@ -71,18 +63,14 @@ class AuthController extends Controller
         return back()->with('error', 'Username atau password salah!');
     }
 
-    /**
-     * Logout
-     */
+
     public function logout()
     {
         Session::forget(['kasir_id', 'kasir_nama']);
         return redirect('/login')->with('success', 'Anda telah logout.');
     }
 
-    /**
-     * Halaman utama
-     */
+   
     public function home()
     {
         if (!Session::has('kasir_id')) {

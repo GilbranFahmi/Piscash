@@ -21,13 +21,12 @@ class OpenDrawerController extends Controller
         return redirect('/login')->with('error', 'Sesi kasir tidak ditemukan!');
     }
 
-    // Drawer aktif terbaru
+
     $drawer = OpenDrawer::where('kasir_id', $kasirId)
         ->orderBy('waktu_buka', 'desc')
         ->first();
 
-    // Ambil transaksi setelah waktu buka drawer
-    $transaksi = collect(); // default kosong
+    $transaksi = collect(); 
 
     if ($drawer) {
         $transaksi = Transaksi::where('kasir_id', $kasirId)
@@ -52,7 +51,7 @@ class OpenDrawerController extends Controller
 
         $kasirId = Session::get('kasir_id');
 
-        // Buat drawer baru
+       
         OpenDrawer::create([
             'kasir_id' => $kasirId,
             'waktu_buka' => Carbon::now(),

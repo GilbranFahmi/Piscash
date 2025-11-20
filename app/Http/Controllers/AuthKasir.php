@@ -10,7 +10,6 @@ class AuthKasir
 {
     public function handle(Request $request, Closure $next)
     {
-        // Cek apakah user sudah login atau belum
         if (!Session::has('kasir')) {
             return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
         }

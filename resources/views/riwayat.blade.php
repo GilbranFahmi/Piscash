@@ -17,7 +17,6 @@
       padding-top: 100px;
     }
 
-    /* Navbar */
 .navbar {
   background: rgba(5, 6, 26, 0.85);
   backdrop-filter: blur(8px);
@@ -80,7 +79,6 @@
   transform: scale(1.05);
 }
 
-/* --- HEADER RIWAYAT --- */
 h2 {
   font-family: 'Great Vibes', cursive;
   text-align: center;
@@ -90,7 +88,6 @@ h2 {
   text-shadow: 0 0 12px #58d6ff, 0 0 25px #58d6ff;
 }
 
-/* --- TABLE CONTAINER (Fix supaya tampil) --- */
 .table-container {
   background: rgba(10, 15, 40, 0.7);
   padding: 25px;
@@ -100,7 +97,7 @@ h2 {
   margin-top: 40px;
 }
 
-/* Tombol detail */
+
 .btn-detail {
   background: linear-gradient(90deg, #FF3484, #56CCF2);
   border: none;
@@ -117,7 +114,7 @@ h2 {
   box-shadow: 0 0 25px rgba(255,107,163,1);
 }
 
-/* Gambar produk */
+
 .produk-img {
   width: 60px;
   height: 60px;
@@ -126,14 +123,20 @@ h2 {
   box-shadow: 0 0 8px #58d6ff88;
 }
 
-/* modal */
-.modal-content {
-  background: rgba(5,10,25,0.9);
-  color: #fff;
-  border-radius: 20px;
-  border: 1px solid #56CCF2;
-  box-shadow: 0 0 30px rgba(88,214,255,0.4);
+#detailModal .modal-content {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    box-shadow: 0 0 25px rgba(86,204,242,0.5) !important;
+    border-radius: 18px !important;
+    color: #fff !important;
 }
+#detailModal .modal-header,
+#detailModal .modal-footer {
+    border-color: rgba(255,255,255,0.2) !important;
+}
+
 
   </style>
 </head>
@@ -180,7 +183,6 @@ h2 {
 </div>
 
 
-<!-- ================= MODAL DINAMIS ================= -->
 <div class="modal fade" id="detailModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -205,7 +207,7 @@ h2 {
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    // Ambil base URL gambar dari Laravel
+
     const IMG_BASE = "{{ asset('images/produk') }}";
 
     function showDetail(id) {
@@ -214,8 +216,9 @@ h2 {
 
             let html = `
                 <p><strong>ID Transaksi:</strong> #${data.id}</p>
-                <p><strong>Tanggal:</strong> ${data.created_at.substring(0,10)}</p>
-                <p><strong>Waktu:</strong> ${data.created_at.substring(11,16)}</p>
+                <p><strong>Tanggal:</strong> ${data.tanggal}</p>
+               <p><strong>Waktu:</strong> ${data.waktu}</p>
+
 
                 <hr>
 
@@ -229,7 +232,7 @@ h2 {
 
                html += `
     <div class="d-flex align-items-center mb-3 gap-3">
-        <img src="${IMG_BASE}/${d.produk.gambar}" class="produk-img">
+       <img src="{{ asset('') }}${d.produk.gambar}" class="produk-img">
 
         <div>
            <strong>${d.produk.nama_produk}</strong><br>

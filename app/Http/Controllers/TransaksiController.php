@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class TransaksiController extends Controller
 {
-    /**
-     * Tampilkan halaman transaksi
-     */
+    
     public function index()
     {
         $produks = Produk::with('kategori')->get();
@@ -23,12 +21,10 @@ class TransaksiController extends Controller
         return view('transaksi', compact('produks', 'kategori'));
     }
 
-    /**
-     * Simpan transaksi ke database (mendukung multi-produk & split bill)
-     */
+    
     public function store(Request $request)
     {
-        // Validasi input
+        
         $request->validate([
             'produk_id' => 'required|array',
             'jumlah' => 'required|array',
@@ -42,7 +38,7 @@ class TransaksiController extends Controller
             return redirect('/login')->with('error', 'Anda harus login sebagai kasir.');
         }
 
-        // ✅ Cek stok setiap produk sebelum transaksi
+    
         foreach ($request->produk_id as $index => $produkId) {
             $produk = Produk::find($produkId);
             $jumlah = $request->jumlah[$index];
@@ -56,7 +52,7 @@ class TransaksiController extends Controller
             }
         }
 
-        // ✅ Cek apakah uang bayar cukup
+       
         $total = $request->total;
         $bayar = $request->jumlah_bayar ?? 0;
 
@@ -64,22 +60,22 @@ class TransaksiController extends Controller
             return back()->with('error', 'Uang yang dibayarkan kurang dari total harga.');
         }
 
-        // Jalankan transaksi database
+       
         DB::beginTransaction();
         try {
-            // Simpan transaksi utama
+            
 $transaksi = Transaksi::create([
     'kasir_id' => $kasirId,
     'kode_qr' => uniqid('TRX-'),
     'total_harga' => $total,
 
-    // FIX PEMBAYARAN
+  
     'jumlah_bayar'  => (int) str_replace('.', '', $request->jumlah_bayar),
     'kembalian'     => (int) str_replace('.', '', $request->kembalian),
 ]);
 
 
-            // Simpan produk yang dibeli + update stok
+            
             foreach ($request->produk_id as $index => $produkId) {
                 $produk = Produk::find($produkId);
                 $jumlah = $request->jumlah[$index];
@@ -95,7 +91,6 @@ $transaksi = Transaksi::create([
                 ]);
             }
 
-            // Simpan metode pembayaran ke session
             if ($request->has('splitBill') && $request->splitBill == 'on') {
                 Session::put('metode_pembayaran', [
                     'split' => true,
@@ -120,17 +115,14 @@ $transaksi = Transaksi::create([
         }
     }
 
-    /**
-     * Tampilkan struk transaksi
-     */
+    
     public function show($id)
     {
         $transaksi = Transaksi::with('detailTransaksis.produk')->findOrFail($id);
 
-        // Ambil metode pembayaran dari session
         $metodeData = Session::get('metode_pembayaran', ['split' => false, 'metode' => 'Tunai']);
 
-        // Format teks metode pembayaran
+      
         if ($metodeData['split'] ?? false) {
             $metode = 'Split Bill: ' .
                 ($metodeData['metode1'] ?? 'Tunai') . ' (Rp' . number_format($metodeData['nominal1'] ?? 0, 0, ',', '.') . ') + ' .

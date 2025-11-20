@@ -13,8 +13,8 @@ class Transaksi extends Model
         'kasir_id',
         'kode_qr',
         'total_harga',
-        'jumlah_bayar',   // ← TAMBAH
-        'kembalian',       // ← TAMBAH
+        'jumlah_bayar',  
+        'kembalian',     
     ];
 
     public function kasir() {

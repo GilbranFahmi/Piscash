@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\File;
 
 class ProdukController extends Controller
 {
-    /**
-     * Tampilkan daftar produk
-     */
+   
     public function index()
     {
         $produks = Produk::with('kategori')->get();
@@ -20,9 +18,7 @@ class ProdukController extends Controller
         return view('produk', compact('produks', 'kategori'));
     }
 
-    /**
-     * Simpan produk baru (dengan upload gambar)
-     */
+    
     public function store(Request $request)
     {
         $request->validate([
@@ -53,15 +49,13 @@ class ProdukController extends Controller
         return redirect()->back()->with('success', 'Produk berhasil ditambahkan!');
     }
 
-    /**
-     * Update produk (dengan opsi ganti gambar)
-     */
+  
     public function update(Request $request, $id)
     {
         $produk = Produk::findOrFail($id);
 
         $request->validate([
-            'nama_produk' => 'required|string|max:255',
+            'nama_produk' => 'required|string|max:255|unique:produks,nama_produk',
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -89,9 +83,7 @@ class ProdukController extends Controller
         return redirect()->back()->with('success', 'Produk berhasil diperbarui!');
     }
 
-    /**
-     * Hapus produk (dan hapus juga gambar di folder public)
-     */
+   
     public function destroy($id)
     {
         $produk = Produk::findOrFail($id);

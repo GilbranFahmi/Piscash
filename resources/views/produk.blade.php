@@ -104,6 +104,87 @@
     margin-bottom: 25px;
 }
 
+.modal-content {
+    background: rgba(5, 6, 26, 0.35) !important; 
+    backdrop-filter: blur(18px);                 
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.12);  
+    box-shadow: 0 0 25px rgba(86, 204, 242, 0.4); 
+    color: #ffffff !important;
+}
+
+
+.modal-header, 
+.modal-footer {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    color: #ffffff !important;
+}
+
+
+.modal-content,
+.modal-content label,
+.modal-content h5 {
+    color: #ffffff !important;
+}
+
+
+.modal-content .form-control,
+.modal-content .form-select {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff !important;
+    border-radius: 10px;
+}
+
+
+.modal-content .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+
+.btn-close {
+    filter: invert(1);
+}
+
+
+.btn-edit-custom {
+    background: #56CCF2 !important;
+    color: #05061a !important;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 18px;
+    transition: all 0.25s ease;
+    box-shadow: 0 0 10px rgba(86, 204, 242, 0.55);
+}
+
+.btn-edit-custom:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 18px rgba(86, 204, 242, 0.85);
+}
+
+
+.btn-delete-custom {
+    background: #FF3484 !important;
+    color: white !important;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 18px;
+    transition: all 0.25s ease;
+    box-shadow: 0 0 10px rgba(255, 52, 132, 0.55);
+}
+
+.btn-delete-custom:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 18px rgba(255, 52, 132, 0.85);
+}
+
+
+
 
   </style>
 </head>
@@ -139,6 +220,18 @@
         {{ session('warning') }}
     </div>
 @endif
+
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $err)
+                <li>{{ $err }}</li>
+            @endforeach
+        </ul>
+        <button class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
 
     <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" class="mb-4">
       @csrf
@@ -205,13 +298,21 @@
           <td>{{ $p->stok }}</td>
 
           <td>
-            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $p->id }}">Edit</button>
+         
+<button class="btn-edit-custom btn btn-sm" 
+        data-bs-toggle="modal" 
+        data-bs-target="#editModal{{ $p->id }}">
+    Edit
+</button>
 
-            <form action="{{ route('produk.destroy', $p->id) }}" method="POST" style="display:inline;">
-              @csrf
-              @method('DELETE')
-              <button class="btn btn-danger btn-sm" onclick="return confirm('Hapus produk ini?')">Hapus</button>
-            </form>
+<form action="{{ route('produk.destroy', $p->id) }}" method="POST" style="display:inline;">
+    @csrf
+    @method('DELETE')
+    <button class="btn-delete-custom btn btn-sm" onclick="return confirm('Hapus produk ini?')">
+        Hapus
+    </button>
+</form>
+
           </td>
         </tr>
 

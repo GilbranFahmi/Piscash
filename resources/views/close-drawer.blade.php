@@ -56,7 +56,7 @@
   color: #56CCF2 !important;
   text-shadow: 0 0 8px #56CCF2;
 }
-
+  
     .btn-logout {
       padding: 8px 28px;
       border-radius: 40px;
@@ -122,21 +122,18 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
 @extends('layouts.main')
 
 @section('title', 'Produk')
 
 @section('content')
 
-<!-- TITLE -->
 <h2 class="text-center mt-3" style="font-family:'Great Vibes'; color:#58d6ff; text-shadow:0 0 15px #58d6ff; font-size:2.7rem;">
   Close Drawer
 </h2>
 
 <div class="container mt-4">
 
-  <!-- INFO DRAWER -->
   <div class="drawer-card mb-4">
     <div class="row">
       <div class="col-md-6">
@@ -158,7 +155,7 @@
 
   <div class="row">
 
-    <!-- SUMMARY -->
+
     <div class="col-md-4">
       <div class="summary-box">
         <h5>Ringkasan Drawer</h5>
@@ -168,7 +165,6 @@
       </div>
     </div>
 
-    <!-- TRANSAKSI -->
     <div class="col-md-8">
       <table class="table table-dark table-striped text-center mb-4">
         <thead>
@@ -195,7 +191,6 @@
         </tbody>
       </table>
 
-      <!-- RIWAYAT CLOSE DRAWER -->
       <table class="table table-dark table-striped text-center">
         <thead>
           <tr>
@@ -221,7 +216,6 @@
   </div>
 </div>
 
-<!-- MODAL CLOSE DRAWER -->
 <div class="modal fade" id="modalCloseDrawer" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content text-dark">

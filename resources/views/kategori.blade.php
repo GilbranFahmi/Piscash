@@ -15,7 +15,6 @@
       padding-top: 100px;
     }
 
-    /* === Navbar === */
     .navbar {
       background: rgba(5, 6, 26, 0.85);
       backdrop-filter: blur(8px);
@@ -76,7 +75,6 @@
       transform: scale(1.05);
     }
 
-    /* === Kontainer utama === */
     .container-box {
       background: rgba(10,15,40,0.8);
       box-shadow: 0 0 25px rgba(88,214,255,0.3);

@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pisces Accessories</title>
 
-  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Google Fonts -->
+
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
@@ -19,7 +18,7 @@
       overflow-x: hidden;
     }
 
-    /* === Navbar === */
+   
     .navbar {
       background: rgba(5, 6, 26, 0.85);
       backdrop-filter: blur(8px);
@@ -42,7 +41,7 @@
     }
 
     .nav-link {
-      color: #56CCF2 !important; /* biru neon default */
+      color: #56CCF2 !important; 
       font-weight: 500;
       margin: 0 8px;
       transition: all 0.3s ease;
@@ -50,13 +49,11 @@
     }
 
     .nav-link.active {
-      color: #FF3484 !important; /* pink neon aktif */
+      color: #FF3484 !important; 
       text-shadow: 0 0 8px #FF3484;
     }
 
-    /* efek hover:
-       - nonaktif biru → pink
-       - aktif pink → biru */
+   
     .nav-link:hover {
       color: #FF3484 !important;
       text-shadow: 0 0 8px #FF3484;
@@ -83,7 +80,7 @@
       transform: scale(1.05);
     }
 
-    /* === Hero Section === */
+   
     .hero {
       min-height: 100vh;
       display: flex;
@@ -139,14 +136,13 @@
 
 <body>
 
-  <!-- Navbar -->
+ 
  @extends('layouts.main')
 
 @section('title', 'Produk')
 
 @section('content')
 
-  <!-- Hero -->
   <section class="hero">
     <h1>Pisces Accessories</h1>
     <p>Elegant; radiant; and full of character like the stars in the night sky.</p>
@@ -154,7 +150,6 @@
   </section>
 
 
-  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   @endsection
 </body>
