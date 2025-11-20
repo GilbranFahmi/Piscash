@@ -121,22 +121,40 @@
       text-shadow: 0 0 8px #58d6ff;
     }
 
-    /* Modal */
-    .modal-content {
-      border-radius: 15px;
-      border: 1px solid #56CCF2;
-      box-shadow: 0 0 25px rgba(88,214,255,0.4);
-    }
-    .btn-primary {
-      background: linear-gradient(90deg, #FF3484, #56CCF2);
-      border: none;
-      font-weight: 600;
-      box-shadow: 0 0 12px rgba(88,214,255,0.7);
-    }
-    .btn-primary:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px rgba(255,107,163,1);
-    }
+#modalOpenDrawer .modal-content {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    box-shadow: 0 0 25px rgba(86,204,242,0.5) !important;
+    border-radius: 18px !important;
+    color: #fff !important;
+}
+
+#modalOpenDrawer .modal-header,
+#modalOpenDrawer .modal-footer {
+    border-color: rgba(255,255,255,0.2) !important;
+}
+
+#modalOpenDrawer .btn-primary {
+    background: linear-gradient(90deg, #FF3484, #56CCF2) !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 600;
+    box-shadow: 0 0 15px rgba(88,214,255,0.7);
+}
+
+#modalOpenDrawer .btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(255,107,163,1);
+}
+
+#modalOpenDrawer .btn-secondary {
+    border-radius: 10px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+}
   </style>
 </head>
 
