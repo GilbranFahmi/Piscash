@@ -22,7 +22,7 @@ class CloseDrawer extends Model
 
     public $timestamps = true;
 
-    // Relasi: close drawer dimiliki satu kasir
+
     public function kasir()
     {
         return $this->belongsTo(Kasir::class, 'kasir_id');
