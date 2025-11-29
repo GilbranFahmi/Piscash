@@ -6,25 +6,34 @@ use App\Models\Produk;
 use App\Models\KategoriProduk;
 use App\Models\Transaksi;
 use App\Models\DetailTransaksi;
+use App\Models\OpenDrawer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 
 class TransaksiController extends Controller
 {
-    
     public function index()
     {
+        $kasirId = Session::get('kasir_id');
+        if (!$kasirId) {
+            return redirect('/login')->with('error', 'Silakan login sebagai kasir.');
+        }
+
+        $drawer = OpenDrawer::where('kasir_id', $kasirId)->first();
+        if (!$drawer) {
+          return redirect()->route('open-drawer.index')
+    ->with('error', 'Silakan buka drawer terlebih dahulu sebelum melakukan transaksi.');
+        }
+
         $produks = Produk::with('kategori')->get();
         $kategori = KategoriProduk::all();
 
-        return view('transaksi', compact('produks', 'kategori'));
+        return view('transaksi.transaksi', compact('produks', 'kategori'));
     }
 
-    
     public function store(Request $request)
     {
-        
         $request->validate([
             'produk_id' => 'required|array',
             'jumlah' => 'required|array',
@@ -38,7 +47,12 @@ class TransaksiController extends Controller
             return redirect('/login')->with('error', 'Anda harus login sebagai kasir.');
         }
 
-    
+        $drawer = OpenDrawer::where('kasir_id', $kasirId)->first();
+        if (!$drawer) {
+            return redirect()->route('open-drawer.index')
+                ->with('error', 'Transaksi gagal! Drawer belum dibuka.');
+        }
+
         foreach ($request->produk_id as $index => $produkId) {
             $produk = Produk::find($produkId);
             $jumlah = $request->jumlah[$index];
@@ -52,30 +66,22 @@ class TransaksiController extends Controller
             }
         }
 
-       
         $total = $request->total;
         $bayar = $request->jumlah_bayar ?? 0;
-
         if ($bayar < $total) {
             return back()->with('error', 'Uang yang dibayarkan kurang dari total harga.');
         }
 
-       
         DB::beginTransaction();
         try {
-            
-$transaksi = Transaksi::create([
-    'kasir_id' => $kasirId,
-    'kode_qr' => uniqid('TRX-'),
-    'total_harga' => $total,
+            $transaksi = Transaksi::create([
+                'kasir_id' => $kasirId,
+                'kode_qr' => uniqid('TRX-'),
+                'total_harga' => $total,
+                'jumlah_bayar' => (int) str_replace('.', '', $request->jumlah_bayar),
+                'kembalian' => (int) str_replace('.', '', $request->kembalian),
+            ]);
 
-  
-    'jumlah_bayar'  => (int) str_replace('.', '', $request->jumlah_bayar),
-    'kembalian'     => (int) str_replace('.', '', $request->kembalian),
-]);
-
-
-            
             foreach ($request->produk_id as $index => $produkId) {
                 $produk = Produk::find($produkId);
                 $jumlah = $request->jumlah[$index];
@@ -107,7 +113,6 @@ $transaksi = Transaksi::create([
             }
 
             DB::commit();
-
             return redirect()->route('struk.show', $transaksi->id)->with('success', 'Transaksi berhasil disimpan!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -115,14 +120,11 @@ $transaksi = Transaksi::create([
         }
     }
 
-    
     public function show($id)
     {
         $transaksi = Transaksi::with('detailTransaksis.produk')->findOrFail($id);
-
         $metodeData = Session::get('metode_pembayaran', ['split' => false, 'metode' => 'Tunai']);
 
-      
         if ($metodeData['split'] ?? false) {
             $metode = 'Split Bill: ' .
                 ($metodeData['metode1'] ?? 'Tunai') . ' (Rp' . number_format($metodeData['nominal1'] ?? 0, 0, ',', '.') . ') + ' .
@@ -131,6 +133,6 @@ $transaksi = Transaksi::create([
             $metode = $metodeData['metode'] ?? 'Tunai';
         }
 
-        return view('struk', compact('transaksi', 'metode'));
+        return view('transaksi.struk', compact('transaksi', 'metode'));
     }
 }

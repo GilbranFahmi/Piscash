@@ -12,7 +12,7 @@ class RiwayatController extends Controller
     {
         $riwayat = Transaksi::orderBy('created_at', 'desc')->get();
 
-        return view('riwayat', compact('riwayat'));
+        return view('riwayat.riwayat', compact('riwayat'));
     }
 
    public function detail($id)

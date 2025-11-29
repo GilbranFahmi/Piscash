@@ -14,7 +14,6 @@ class CloseDrawerController extends Controller
 {
     public function index()
     {
-       
         $kasirId = Session::get('kasir_id');
         if (!$kasirId) {
             return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
@@ -25,22 +24,19 @@ class CloseDrawerController extends Controller
             return redirect('/login')->with('error', 'Kasir tidak ditemukan.');
         }
 
-        
+        // Ambil drawer terakhir (yang belum ditutup)
         $drawer = OpenDrawer::where('kasir_id', $kasirId)
             ->orderBy('waktu_buka', 'desc')
             ->first();
 
-        
         $saldo_awal = $drawer->saldo_awal ?? 0;
         $waktu_buka = $drawer->waktu_buka ?? null;
 
-        
         $transaksi = collect();
         $total_masuk = 0;
 
         if ($drawer) {
-            $transaksi = Transaksi::with('kasir')
-                ->where('kasir_id', $kasirId)
+            $transaksi = Transaksi::where('kasir_id', $kasirId)
                 ->where('created_at', '>=', $drawer->waktu_buka)
                 ->orderBy('created_at', 'asc')
                 ->get();
@@ -52,9 +48,13 @@ class CloseDrawerController extends Controller
             ->orderBy('waktu_tutup', 'desc')
             ->get();
 
-        return view('close-drawer', compact(
+        // Tambah status drawer
+        $status = $drawer ? 'Aktif' : 'Tidak Aktif';
+
+        return view('drawer.close-drawer', compact(
             'kasir', 'drawer', 'waktu_buka',
-            'saldo_awal', 'transaksi', 'total_masuk', 'closeList'
+            'saldo_awal', 'transaksi', 'total_masuk',
+            'closeList', 'status'
         ));
     }
 
@@ -71,16 +71,14 @@ class CloseDrawerController extends Controller
 
         $uang_keluar = $request->input('uang_keluar', 0);
 
- 
         $drawer = OpenDrawer::where('kasir_id', $kasirId)
             ->orderBy('waktu_buka', 'desc')
             ->first();
 
         if (!$drawer) {
-            return redirect()->back()->with('error', 'Tidak ada open drawer aktif untuk kasir ini.');
+            return redirect()->back()->with('error', 'Tidak ada drawer yang sedang aktif.');
         }
 
-        
         $total_masuk = Transaksi::where('kasir_id', $kasirId)
             ->where('created_at', '>=', $drawer->waktu_buka)
             ->sum('total_harga');
@@ -88,15 +86,14 @@ class CloseDrawerController extends Controller
         $saldo_awal = $drawer->saldo_awal ?? 0;
         $saldo_akhir = $saldo_awal + $total_masuk - $uang_keluar;
 
-    
         CloseDrawer::create([
-    'kasir_id'   => $kasirId,
-    'waktu_tutup'=> now(),
-    'saldo_awal' => $saldo_awal,
-    'saldo_akhir'=> $saldo_akhir,
-]);
-    
+            'kasir_id' => $kasirId,
+            'waktu_tutup' => Carbon::now('Asia/Jakarta'),
+            'saldo_awal' => $saldo_awal,
+            'saldo_akhir' => $saldo_akhir,
+        ]);
 
+    
         $drawer->delete();
 
         return redirect()->route('close-drawer.index')

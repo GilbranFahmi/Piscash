@@ -12,36 +12,41 @@ use Carbon\Carbon;
 class OpenDrawerController extends Controller
 {
     public function index()
-{
-    $kasirId = Session::get('kasir_id');
+    {
+        $kasirId = Session::get('kasir_id');
+        $kasir = Kasir::find($kasirId);
 
-    $kasir = Kasir::find($kasirId);
+        if (!$kasir) {
+            return redirect('/login')->with('error', 'Sesi kasir tidak ditemukan!');
+        }
 
-    if (!$kasir) {
-        return redirect('/login')->with('error', 'Sesi kasir tidak ditemukan!');
+        // Ambil drawer terakhir dari kasir ini
+        $drawer = OpenDrawer::where('kasir_id', $kasirId)
+            ->orderBy('waktu_buka', 'desc')
+            ->first();
+
+        // Default transaksi kosong
+        $transaksi = collect();
+
+        // Jika drawer ada, ambil transaksi setelah waktu buka drawer
+        if ($drawer) {
+            $transaksi = Transaksi::where('kasir_id', $kasirId)
+                ->where('created_at', '>=', $drawer->waktu_buka)
+                ->orderBy('created_at', 'asc')
+                ->get();
+        }
+
+        // Tentukan status drawer
+        $status = $drawer ? 'Aktif' : 'Tidak Aktif';
+
+        return view('drawer.open-drawer', [
+            'kasir' => $kasir,
+            'waktu_buka' => $drawer->waktu_buka ?? null,
+            'saldo_awal' => $drawer->saldo_awal ?? 0,
+            'transaksi' => $transaksi,
+            'status' => $status
+        ]);
     }
-
-
-    $drawer = OpenDrawer::where('kasir_id', $kasirId)
-        ->orderBy('waktu_buka', 'desc')
-        ->first();
-
-    $transaksi = collect(); 
-
-    if ($drawer) {
-        $transaksi = Transaksi::where('kasir_id', $kasirId)
-            ->where('created_at', '>=', $drawer->waktu_buka)
-            ->orderBy('created_at', 'asc')
-            ->get();
-    }
-
-    return view('open-drawer', [
-        'kasir' => $kasir,
-        'waktu_buka' => $drawer->waktu_buka ?? null,
-        'saldo_awal' => $drawer->saldo_awal ?? 0,
-        'transaksi' => $transaksi
-    ]);
-}
 
     public function store(Request $request)
     {
@@ -51,7 +56,7 @@ class OpenDrawerController extends Controller
 
         $kasirId = Session::get('kasir_id');
 
-       
+        // Buat drawer baru
         OpenDrawer::create([
             'kasir_id' => $kasirId,
             'waktu_buka' => Carbon::now(),

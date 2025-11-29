@@ -167,7 +167,7 @@
 @section('content')
 
 
-  <!-- TITLE -->
+
   <h2 class="text-center mt-3"
       style="font-family:'Great Vibes';color:#58d6ff;text-shadow:0 0 15px #58d6ff;font-size:2.7rem;">
       Open Drawer
@@ -175,7 +175,13 @@
 
   <div class="container mt-4">
 
-    <!-- Drawer Info -->
+@if(session('error'))
+<div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+    {{ session('error') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
+
     <div class="drawer-card mb-4">
       <div class="row">
         <div class="col-md-6">
@@ -184,7 +190,13 @@
         </div>
         <div class="col-md-6">
           <p><strong>Modal Awal:</strong> Rp {{ number_format($saldo_awal ?? 0,0,',','.') }}</p>
-          <p><strong>Status:</strong> <span class="text-success">Aktif</span></p>
+        <p><strong>Status:</strong>
+    @if(!empty($status) && $status === 'Aktif')
+        <span class="text-success">Aktif</span>
+    @else
+        <span class="text-danger">Tidak Aktif</span>
+    @endif
+</p>
         </div>
       </div>
     </div>

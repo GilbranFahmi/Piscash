@@ -142,7 +142,13 @@
       </div>
       <div class="col-md-6 text-end">
         <p><strong>Uang Modal:</strong> Rp {{ number_format($saldo_awal,0,',','.') }}</p>
-        <p><strong>Status:</strong> <span class="text-success">Aktif</span></p>
+               <p><strong>Status:</strong>
+    @if(!empty($status) && $status === 'Aktif')
+        <span class="text-success">Aktif</span>
+    @else
+        <span class="text-danger">Tidak Aktif</span>
+    @endif
+</p>
       </div>
     </div>
   </div>

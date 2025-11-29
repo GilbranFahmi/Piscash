@@ -145,6 +145,7 @@
     <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+
     <form action="{{ route('transaksi.store') }}" method="POST">
       @csrf
 
@@ -237,6 +238,7 @@
 
     </form>
 </div>
+
 
 <script>
 function filterProduk(select) {

@@ -232,7 +232,6 @@
     </div>
 @endif
 
-
     <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" class="mb-4">
       @csrf
       <div class="row g-3 align-items-center">
@@ -316,7 +315,6 @@
           </td>
         </tr>
 
-        <!-- Modal Edit -->
         <div class="modal fade" id="editModal{{ $p->id }}" tabindex="-1">
           <div class="modal-dialog">
             <div class="modal-content text-dark">

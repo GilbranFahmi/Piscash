@@ -122,6 +122,21 @@
       <div class="alert alert-success text-center">{{ session('success') }}</div>
     @endif
 
+@if ($errors->any())
+    <div class="alert alert-danger">
+        @foreach ($errors->all() as $error)
+            <div>{{ $error }}</div>
+        @endforeach
+    </div>
+@endif
+
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+
     <form action="{{ route('kategori.store') }}" method="POST" class="mb-4">
       @csrf
       <div class="input-group">
