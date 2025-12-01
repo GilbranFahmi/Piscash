@@ -118,10 +118,6 @@
       Kelola Kategori
     </h2>
 
-    @if(session('success'))
-      <div class="alert alert-success text-center">{{ session('success') }}</div>
-    @endif
-
 @if ($errors->any())
     <div class="alert alert-danger">
         @foreach ($errors->all() as $error)
