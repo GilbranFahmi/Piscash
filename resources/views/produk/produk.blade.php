@@ -104,15 +104,29 @@
     margin-bottom: 25px;
 }
 
-.modal-content {
-    background: rgba(5, 6, 26, 0.35) !important; 
-    backdrop-filter: blur(18px);                 
-    -webkit-backdrop-filter: blur(18px);
-    border-radius: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.12);  
-    box-shadow: 0 0 25px rgba(86, 204, 242, 0.4); 
-    color: #ffffff !important;
+/* Hilangkan white glow default input focus */
+.modal-content input:focus,
+.modal-content select:focus,
+.modal-content textarea:focus {
+    background: #081027 !important;
+    color: #b3e9ff !important;
+    border: 1px solid #56CCF2 !important;
+    outline: none !important;
+    box-shadow: 0 0 10px rgba(86,204,242,0.7);
 }
+
+/* Perbaiki backdrop putih berlebihan */
+.modal-backdrop.show {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+    backdrop-filter: blur(2px); /* opsional */
+}
+
+/* Stabilkan modal agar tidak ikut brightening */
+.modal-content {
+    background: rgba(5, 6, 26, 0.95) !important;
+    border: 1px solid #56CCF2 !important;
+}
+
 
 
 .modal-header, 
@@ -197,210 +211,197 @@
 
 @section('content')
 
-
+<style>
+  body {
+    background-color: #05061a;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    padding-top: 100px;
+  }
+</style>
 
 <div class="container mt-5">
-    <h2 class="text-center mb-4" style="font-family:'Great Vibes',cursive;color:#58d6ff;">Kelola Produk</h2>
 
-<!-- ALERT NOTIFIKASI -->
-@if(session('success'))
-    <div class="alert alert-success neon-alert text-center" id="autoAlert">
-        {{ session('success') }}
-    </div>
-@endif
+    <h2 class="text-center mb-4" style="font-family:'Great Vibes',cursive;color:#58d6ff;text-shadow:0 0 12px #58d6ff;">Kelola Produk</h2>
 
-@if(session('error'))
-    <div class="alert alert-danger neon-alert text-center" id="autoAlert">
-        {{ session('error') }}
-    </div>
-@endif
+    @if(session('success'))
+        <div class="alert alert-success neon-alert text-center" id="autoAlert">
+            {{ session('success') }}
+        </div>
+    @endif
 
-@if(session('warning'))
-    <div class="alert alert-warning neon-alert text-center" id="autoAlert">
-        {{ session('warning') }}
-    </div>
-@endif
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $err)
+                    <li>{{ $err }}</li>
+                @endforeach
+            </ul>
+            <button class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
-@if ($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show">
-        <ul class="mb-0">
-            @foreach ($errors->all() as $err)
-                <li>{{ $err }}</li>
-            @endforeach
-        </ul>
-        <button class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-
+    {{-- Form Tambah Produk --}}
     <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" class="mb-4">
-      @csrf
-      <div class="row g-3 align-items-center">
-        <div class="col-md-3">
-          <input type="text" name="nama_produk" class="form-control" placeholder="Nama Produk" required>
+        @csrf
+        <div class="row g-3 align-items-center">
+
+            <div class="col-md-2">
+                <input type="text" name="kode_produk" class="form-control" placeholder="Kode Produk (Scan/Isi)" required>
+            </div>
+
+            <div class="col-md-3">
+                <input type="text" name="nama_produk" class="form-control" placeholder="Nama Produk" required>
+            </div>
+
+            <div class="col-md-2">
+                <input type="number" name="harga" class="form-control" placeholder="Harga" required>
+            </div>
+
+            <div class="col-md-2">
+                <input type="number" name="stok" class="form-control" placeholder="Stok" required>
+            </div>
+
+            <div class="col-md-2">
+                <select name="kategori_id" class="form-select" required>
+                    <option value="">Kategori</option>
+                    @foreach($kategori as $k)
+                        <option value="{{ $k->id }}">{{ $k->nama_kategori }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-md-1 text-end">
+                <button type="submit" class="btn btn-glow w-100">+</button>
+            </div>
         </div>
 
-        <div class="col-md-2">
-          <input type="number" name="harga" class="form-control" placeholder="Harga" required>
+        <div class="mt-3">
+            <input type="file" name="gambar" class="form-control" accept="image/*">
         </div>
-
-        <div class="col-md-2">
-          <input type="number" name="stok" class="form-control" placeholder="Stok" required>
-        </div>
-
-        <div class="col-md-2">
-          <select name="kategori_id" class="form-select" required>
-            <option value="">Kategori</option>
-            @foreach($kategori as $k)
-              <option value="{{ $k->id }}">{{ $k->nama_kategori }}</option>
-            @endforeach
-          </select>
-        </div>
-
-        <div class="col-md-2">
-          <input type="file" name="gambar" class="form-control" accept="image/*">
-        </div>
-
-        <div class="col-md-1 text-end">
-          <button type="submit" class="btn btn-glow w-100">+</button>
-        </div>
-      </div>
     </form>
 
+
+    {{-- Table Produk --}}
+    <div class="table-responsive">
     <table class="table table-dark table-striped align-middle text-center">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Gambar</th>
-          <th>Nama Produk</th>
-          <th>Kategori</th>
-          <th>Harga</th>
-          <th>Stok</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Kode</th>
+                <th>Gambar</th>
+                <th>Nama Produk</th>
+                <th>Kategori</th>
+                <th>Harga</th>
+                <th>Stok</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
 
-      <tbody>
-        @foreach($produks as $p)
-        <tr>
-          <td>{{ $loop->iteration }}</td>
+        <tbody>
+            @foreach($produks as $p)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $p->kode_produk }}</td>
+                <td><img src="{{ asset($p->gambar) }}" class="produk-img"></td>
+                <td>{{ $p->nama_produk }}</td>
+                <td>{{ $p->kategori->nama_kategori ?? '-' }}</td>
+                <td>Rp{{ number_format($p->harga, 0, ',', '.') }}</td>
+                <td>{{ $p->stok }}</td>
 
-          <td>
-            <img 
-              src="{{ asset('images/produk/' . basename($p->gambar)) }}" 
-              alt="Gambar Produk" 
-              class="produk-img">
-          </td>
+                <td>
+                    <button class="btn-edit-custom btn btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editModal{{ $p->id }}">
+                        Edit
+                    </button>
 
-          <td>{{ $p->nama_produk }}</td>
-          <td>{{ $p->kategori->nama_kategori ?? '-' }}</td>
-          <td>Rp{{ number_format($p->harga,0,',','.') }}</td>
-          <td>{{ $p->stok }}</td>
+                    <form action="{{ route('produk.destroy', $p->id) }}" method="POST" style="display:inline;">
+                        @csrf @method('DELETE')
+                        <button class="btn-delete-custom btn btn-sm" onclick="return confirm('Hapus produk ini?')">
+                            Hapus
+                        </button>
+                    </form>
+                </td>
+            </tr>
 
-          <td>
-         
-<button class="btn-edit-custom btn btn-sm" 
-        data-bs-toggle="modal" 
-        data-bs-target="#editModal{{ $p->id }}">
-    Edit
-</button>
 
-<form action="{{ route('produk.destroy', $p->id) }}" method="POST" style="display:inline;">
-    @csrf
-    @method('DELETE')
-    <button class="btn-delete-custom btn btn-sm" onclick="return confirm('Hapus produk ini?')">
-        Hapus
-    </button>
-</form>
+            {{-- Modal Edit --}}
+            <div class="modal fade" id="editModal{{ $p->id }}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content text-white">
+                        <form action="{{ route('produk.update', $p->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf @method('PUT')
 
-          </td>
-        </tr>
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Produk</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
 
-        <div class="modal fade" id="editModal{{ $p->id }}" tabindex="-1">
-          <div class="modal-dialog">
-            <div class="modal-content text-dark">
-              <form action="{{ route('produk.update', $p->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
+                            <div class="modal-body">
 
-                <div class="modal-header">
-                  <h5 class="modal-title">Edit Produk</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+                                @if($p->gambar)
+                                <div class="mb-3 text-center">
+                                    <img src="{{ asset($p->gambar) }}" style="width:80px;height:80px;border-radius:10px;object-fit:cover;">
+                                </div>
+                                @endif
 
-                <div class="modal-body">
+                                <label class="mb-1">Kode Produk</label>
+                                <input type="text" name="kode_produk" class="form-control mb-3" value="{{ $p->kode_produk }}" required>
 
-                  @if($p->gambar)
-                    <div class="mb-3 text-center">
-                      <img 
-                        src="{{ asset('images/produk/' . basename($p->gambar)) }}"
-                        style="width:80px;height:80px;border-radius:10px;object-fit:cover;">
+                                <label class="mb-1">Nama Produk</label>
+                                <input type="text" name="nama_produk" class="form-control mb-3" value="{{ $p->nama_produk }}" required>
+
+                                <label class="mb-1">Kategori</label>
+                                <select name="kategori_id" class="form-select mb-3">
+                                    @foreach($kategori as $k)
+                                    <option value="{{ $k->id }}" {{ $p->kategori_id==$k->id?'selected':'' }}>
+                                        {{ $k->nama_kategori }}
+                                    </option>
+                                    @endforeach
+                                </select>
+
+                                <label class="mb-1">Harga</label>
+                                <input type="number" name="harga" class="form-control mb-3" value="{{ $p->harga }}" required>
+
+                                <label class="mb-1">Stok</label>
+                                <input type="number" name="stok" class="form-control mb-3" value="{{ $p->stok }}" required>
+
+                                <label>Ganti Gambar</label>
+                                <input type="file" name="gambar" class="form-control" accept="image/*">
+
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button class="btn btn-primary">Simpan</button>
+                            </div>
+
+                        </form>
                     </div>
-                  @endif
-
-                  <div class="mb-3">
-                    <label>Nama Produk</label>
-                    <input type="text" name="nama_produk" value="{{ $p->nama_produk }}" class="form-control" required>
-                  </div>
-
-                  <div class="mb-3">
-    <label>Kategori</label>
-    <select name="kategori_id" class="form-select" required>
-        @foreach($kategori as $k)
-            <option value="{{ $k->id }}" 
-                {{ $p->kategori_id == $k->id ? 'selected' : '' }}>
-                {{ $k->nama_kategori }}
-            </option>
-        @endforeach
-    </select>
-</div>
-
-                  <div class="mb-3">
-                    <label>Harga</label>
-                    <input type="number" name="harga" value="{{ $p->harga }}" class="form-control" required>
-                  </div>
-
-                  <div class="mb-3">
-                    <label>Stok</label>
-                    <input type="number" name="stok" value="{{ $p->stok }}" class="form-control" required>
-                  </div>
-
-                  <div class="mb-3">
-                    <label>Ganti Gambar</label>
-                    <input type="file" name="gambar" class="form-control" accept="image/*">
-                  </div>
-
                 </div>
-
-                <div class="modal-footer">
-                  <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                  <button class="btn btn-primary">Simpan</button>
-                </div>
-
-              </form>
             </div>
-          </div>
-        </div>
 
-        @endforeach
-      </tbody>
+            @endforeach
+        </tbody>
     </table>
-</div>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</div>
 
 <script>
-    setTimeout(() => {
-        const alertBox = document.getElementById('autoAlert');
-        if (alertBox) {
-            alertBox.style.transition = "opacity 0.5s";
-            alertBox.style.opacity = "0";
-
-            setTimeout(() => alertBox.remove(), 600);
-        }
-    }, 3000);
+setTimeout(() => {
+    const alertBox = document.getElementById('autoAlert');
+    if (alertBox) {
+        alertBox.classList.add("fade");
+        setTimeout(() => alertBox.remove(), 500);
+    }
+}, 3000);
 </script>
 
 @endsection
+
 
 </body>
 </html>

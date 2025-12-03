@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\File;
 
 class ProdukController extends Controller
 {
+    private function generateKodeProduk()
+    {
+        $lastProduct = Produk::orderBy('id', 'desc')->first();
+        $nextNumber = $lastProduct ? ((int) substr($lastProduct->kode_produk, 2)) + 1 : 1;
+        return 'PA' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+    }
+
     public function index()
     {
         $produks = Produk::with('kategori')->get();
@@ -24,8 +31,7 @@ class ProdukController extends Controller
             'stok' => 'required|integer|min:0',
             'kategori_id' => 'required|exists:kategori_produks,id',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ], [
-            'nama_produk.unique' => 'Nama produk sudah digunakan.',
+            'kode_produk' => 'nullable|string|unique:produks,kode_produk'
         ]);
 
         $gambarPath = null;
@@ -38,6 +44,7 @@ class ProdukController extends Controller
         }
 
         Produk::create([
+            'kode_produk' => $request->kode_produk ?: $this->generateKodeProduk(),
             'nama_produk' => $request->nama_produk,
             'harga' => $request->harga,
             'stok' => $request->stok,
@@ -58,6 +65,7 @@ class ProdukController extends Controller
             'stok' => 'required|integer|min:0',
             'kategori_id' => 'required|exists:kategori_produks,id',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'kode_produk' => 'required|string|unique:produks,kode_produk,' . $produk->id,
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -71,6 +79,7 @@ class ProdukController extends Controller
         }
 
         $produk->update([
+            'kode_produk' => $request->kode_produk,
             'nama_produk' => $request->nama_produk,
             'harga' => $request->harga,
             'stok' => $request->stok,

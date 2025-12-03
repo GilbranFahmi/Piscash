@@ -59,6 +59,7 @@ Route::middleware('auth.kasir')->group(function () {
     Route::get('/close-drawer', [CloseDrawerController::class, 'index'])->name('close-drawer.index');
     Route::post('/close-drawer', [CloseDrawerController::class, 'store'])->name('close-drawer.store');
 
+    Route::get('/transaksi/search-kode', [TransaksiController::class, 'searchKode'])->name('transaksi.searchKode');
 
     Route::get('/riwayat-drawer', [CloseDrawerController::class, 'history'])->name('drawer.history');
 });

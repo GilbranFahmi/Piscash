@@ -144,9 +144,16 @@ h2 {
 
 @extends('layouts.main')
 
-@section('title', 'Produk')
+@section('title', 'Riwayat Transaksi')
 
 @section('content')
+
+<style>
+    body {
+        background-color: #05061a;
+        color: #fff;
+    }
+</style>
 
 <div class="container">
 
@@ -172,7 +179,7 @@ h2 {
                     <td>Rp{{ number_format($r->total_harga,0,',','.') }}</td>
                     <td>
                         <button class="btn-detail" onclick="showDetail({{ $r->id }})">
-                            Lihat Detail
+                            Detail
                         </button>
                     </td>
                 </tr>
@@ -182,79 +189,51 @@ h2 {
     </div>
 </div>
 
-
+{{-- MODAL --}}
 <div class="modal fade" id="detailModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content text-white">
             <div class="modal-header">
                 <h5 class="modal-title">Detail Transaksi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-
             <div class="modal-body" id="modalBodyContent">
-                <!-- AJAX isi di sini -->
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script>
-
-    const IMG_BASE = "{{ asset('images/produk') }}";
-
     function showDetail(id) {
-
         $.get("/riwayat/detail/" + id, function (data) {
 
             let html = `
-                <p><strong>ID Transaksi:</strong> #${data.id}</p>
-                <p><strong>Tanggal:</strong> ${data.tanggal}</p>
-               <p><strong>Waktu:</strong> ${data.waktu}</p>
-
-
+                <strong>ID Transaksi:</strong> #${data.id}<br>
+                <strong>Tanggal:</strong> ${data.tanggal}<br>
+                <strong>Waktu:</strong> ${data.waktu}<br>
                 <hr>
-
-                <h5>Daftar Produk:</h5>
-                <div class='mt-3'>
+                <h5>Produk Dibeli:</h5>
             `;
 
             data.detail_transaksis.forEach(d => {
-
-                let imgSrc = `${IMG_BASE}/${d.produk.gambar}`;
-
-               html += `
-    <div class="d-flex align-items-center mb-3 gap-3">
-       <img src="{{ asset('') }}${d.produk.gambar}" class="produk-img">
-
-        <div>
-           <strong>${d.produk.nama_produk}</strong><br>
-           ${d.jumlah}x @ Rp${Number(d.produk.harga).toLocaleString('id-ID')}<br>
-           <span class="text-info">Subtotal: Rp${Number(d.subtotal).toLocaleString('id-ID')}</span>
-        </div>
-    </div>
-`;
+                html += `
+                <div class="d-flex align-items-center mb-2 gap-3">
+                    <img src="/${d.produk.gambar}" width="55" height="55" class="rounded shadow">
+                    <div>
+                        ${d.produk.kode_produk ?? '-'} - <strong>${d.produk.nama_produk}</strong><br>
+                        ${d.jumlah}x @ Rp${Number(d.produk.harga).toLocaleString('id-ID')}<br>
+                        <span class="text-info">Subtotal: Rp${Number(d.subtotal).toLocaleString('id-ID')}</span>
+                    </div>
+                </div>`;
             });
 
             html += `
-                </div>
                 <hr>
-
-                <h5>Total Transaksi:</h5>
-                <p><strong>Rp${Number(data.total_harga).toLocaleString('id-ID')}</strong></p>
-
-                <h5>Jumlah Bayar:</h5>
-                <p>Rp${Number(data.jumlah_bayar ?? 0).toLocaleString('id-ID')}</p>
-
-                <h5>Kembalian:</h5>
-                <p>Rp${Number(data.kembalian ?? 0).toLocaleString('id-ID')}</p>
+                <strong>Total:</strong> Rp${Number(data.total_harga).toLocaleString('id-ID')}<br>
+                <strong>Bayar:</strong> Rp${Number(data.jumlah_bayar).toLocaleString('id-ID')}<br>
+                <strong>Kembalian:</strong> Rp${Number(data.kembalian).toLocaleString('id-ID')}
             `;
 
             $("#modalBodyContent").html(html);
@@ -262,6 +241,7 @@ h2 {
         });
     }
 </script>
+
 @endsection
 
 </body>

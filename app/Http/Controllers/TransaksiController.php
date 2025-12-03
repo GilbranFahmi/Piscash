@@ -22,8 +22,8 @@ class TransaksiController extends Controller
 
         $drawer = OpenDrawer::where('kasir_id', $kasirId)->first();
         if (!$drawer) {
-          return redirect()->route('open-drawer.index')
-    ->with('error', 'Silakan buka drawer terlebih dahulu sebelum melakukan transaksi.');
+            return redirect()->route('open-drawer.index')
+                ->with('error', 'Silakan buka drawer terlebih dahulu sebelum melakukan transaksi.');
         }
 
         $produks = Produk::with('kategori')->get();
@@ -32,106 +32,106 @@ class TransaksiController extends Controller
         return view('transaksi.transaksi', compact('produks', 'kategori'));
     }
 
-    public function store(Request $request)
+    public function searchKode(Request $request)
     {
-        $request->validate([
-            'produk_id' => 'required|array',
-            'jumlah' => 'required|array',
-            'subtotal' => 'required|array',
-            'total' => 'required|numeric|min:0',
-            'jumlah_bayar' => 'nullable|numeric|min:0'
+        $kode = $request->kode;
+        $produk = Produk::where('kode_produk', $kode)->first();
+
+        if (!$produk) {
+            return response()->json(['error' => 'Produk tidak ditemukan'], 404);
+        }
+
+        return response()->json($produk);
+    }
+
+   public function store(Request $request)
+{
+    $request->validate([
+        'produk_id' => 'required|array',
+        'jumlah' => 'required|array',
+        'subtotal' => 'required|array',
+        'total' => 'required',
+        'jumlah_bayar' => 'nullable'
+    ]);
+
+    $kasirId = Session::get('kasir_id');
+    if (!$kasirId) {
+        return redirect('/login')->with('error', 'Anda harus login sebagai kasir.');
+    }
+
+    $drawer = OpenDrawer::where('kasir_id', $kasirId)->first();
+    if (!$drawer) {
+        return redirect()->route('open-drawer.index')
+            ->with('error', 'Transaksi gagal! Drawer belum dibuka.');
+    }
+
+    // Convert formatted currency to integer (remove . and ,)
+    $total = (int) preg_replace('/[^0-9]/', '', $request->total);
+    $bayar = (int) preg_replace('/[^0-9]/', '', $request->jumlah_bayar);
+    $kembalian = max(0, $bayar - $total);
+
+    // Validasi stok sebelum transaksi
+    foreach ($request->produk_id as $i => $produkId) {
+        $produk = Produk::find($produkId);
+        $jumlah = $request->jumlah[$i];
+
+        if (!$produk)
+            return back()->with('error', "Produk tidak ditemukan.");
+
+        if ($produk->stok < $jumlah)
+            return back()->with('error', "Stok '{$produk->nama_produk}' tidak mencukupi.");
+    }
+
+    // Validasi bayar
+    if ($bayar < $total) {
+        return back()->with('error', 'Uang yang dibayarkan kurang dari total harga.');
+    }
+
+    DB::beginTransaction();
+    try {
+
+        $transaksi = Transaksi::create([
+            'kasir_id' => $kasirId,
+            'kode_qr' => uniqid('TRX-'),
+            'total_harga' => $total,
+            'jumlah_bayar' => $bayar,
+            'kembalian' => $kembalian
         ]);
 
-        $kasirId = Session::get('kasir_id');
-        if (!$kasirId) {
-            return redirect('/login')->with('error', 'Anda harus login sebagai kasir.');
-        }
+        foreach ($request->produk_id as $i => $produkId) {
 
-        $drawer = OpenDrawer::where('kasir_id', $kasirId)->first();
-        if (!$drawer) {
-            return redirect()->route('open-drawer.index')
-                ->with('error', 'Transaksi gagal! Drawer belum dibuka.');
-        }
-
-        foreach ($request->produk_id as $index => $produkId) {
             $produk = Produk::find($produkId);
-            $jumlah = $request->jumlah[$index];
+            $jumlah = $request->jumlah[$i];
 
-            if (!$produk) {
-                return back()->with('error', "Produk dengan ID {$produkId} tidak ditemukan.");
-            }
+            $produk->stok -= $jumlah;
+            $produk->save();
 
-            if ($produk->stok < $jumlah) {
-                return back()->with('error', "Stok produk '{$produk->nama_produk}' tidak mencukupi. Stok tersisa: {$produk->stok}");
-            }
-        }
-
-        $total = $request->total;
-        $bayar = $request->jumlah_bayar ?? 0;
-        if ($bayar < $total) {
-            return back()->with('error', 'Uang yang dibayarkan kurang dari total harga.');
-        }
-
-        DB::beginTransaction();
-        try {
-            $transaksi = Transaksi::create([
-                'kasir_id' => $kasirId,
-                'kode_qr' => uniqid('TRX-'),
-                'total_harga' => $total,
-                'jumlah_bayar' => (int) str_replace('.', '', $request->jumlah_bayar),
-                'kembalian' => (int) str_replace('.', '', $request->kembalian),
+            DetailTransaksi::create([
+                'transaksi_id' => $transaksi->id,
+                'produk_id' => $produkId,
+                'jumlah' => $jumlah,
+                'subtotal' => (int) $request->subtotal[$i]
             ]);
-
-            foreach ($request->produk_id as $index => $produkId) {
-                $produk = Produk::find($produkId);
-                $jumlah = $request->jumlah[$index];
-
-                $produk->stok -= $jumlah;
-                $produk->save();
-
-                DetailTransaksi::create([
-                    'transaksi_id' => $transaksi->id,
-                    'produk_id' => $produkId,
-                    'jumlah' => $jumlah,
-                    'subtotal' => $request->subtotal[$index],
-                ]);
-            }
-
-            if ($request->has('splitBill') && $request->splitBill == 'on') {
-                Session::put('metode_pembayaran', [
-                    'split' => true,
-                    'metode1' => $request->metode1 ?? 'Tunai',
-                    'nominal1' => $request->nominal1 ?? 0,
-                    'metode2' => $request->metode2 ?? 'Tunai',
-                    'nominal2' => $request->nominal2 ?? 0,
-                ]);
-            } else {
-                Session::put('metode_pembayaran', [
-                    'split' => false,
-                    'metode' => $request->metode ?? 'Tunai',
-                ]);
-            }
-
-            DB::commit();
-            return redirect()->route('struk.show', $transaksi->id)->with('success', 'Transaksi berhasil disimpan!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Terjadi kesalahan saat menyimpan transaksi: ' . $e->getMessage());
         }
+
+        DB::commit();
+        return redirect()->route('struk.show', $transaksi->id)
+            ->with('success', 'Transaksi berhasil disimpan!');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
     }
+}
 
     public function show($id)
     {
         $transaksi = Transaksi::with('detailTransaksis.produk')->findOrFail($id);
         $metodeData = Session::get('metode_pembayaran', ['split' => false, 'metode' => 'Tunai']);
 
-        if ($metodeData['split'] ?? false) {
-            $metode = 'Split Bill: ' .
-                ($metodeData['metode1'] ?? 'Tunai') . ' (Rp' . number_format($metodeData['nominal1'] ?? 0, 0, ',', '.') . ') + ' .
-                ($metodeData['metode2'] ?? 'Tunai') . ' (Rp' . number_format($metodeData['nominal2'] ?? 0, 0, ',', '.') . ')';
-        } else {
-            $metode = $metodeData['metode'] ?? 'Tunai';
-        }
+        $metode = $metodeData['split']
+            ? 'Split Bill'
+            : ($metodeData['metode'] ?? 'Tunai');
 
         return view('transaksi.struk', compact('transaksi', 'metode'));
     }
