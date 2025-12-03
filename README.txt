@@ -52,6 +52,8 @@ D. Generate app key Laravel
 php artisan key:generate
 ```
 
+git pull --rebase origin main
+
 ---
 
 ## 3. Setup Database
@@ -319,5 +321,6 @@ Saya mau setup.bat juga
 ```
 
 Mau yang mana?
+
 
 
