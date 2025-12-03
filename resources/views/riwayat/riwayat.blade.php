@@ -152,54 +152,96 @@ h2 {
     body {
         background-color: #05061a;
         color: #fff;
+        padding-top: 100px;
+    }
+
+    h2 {
+        font-family: 'Great Vibes', cursive;
+        text-align: center;
+        margin-top: 20px;
+        font-size: 3rem;
+        color: #58d6ff;
+        text-shadow: 0 0 12px #58d6ff, 0 0 25px #58d6ff;
+    }
+
+    .table-container {
+        background: rgba(10, 15, 40, 0.7);
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0 0 25px rgba(88,214,255,0.3);
+        border: 1px solid rgba(88,214,255,0.3);
+        margin-top: 30px;
+    }
+
+    .btn-detail {
+        background: linear-gradient(90deg, #FF3484, #56CCF2);
+        border: none;
+        padding: 6px 16px;
+        color: white;
+        font-weight: 600;
+        border-radius: 25px;
+        box-shadow: 0 0 12px rgba(88,214,255,0.8);
+        transition: 0.3s ease;
+    }
+
+    .btn-detail:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(255,107,163,1);
     }
 </style>
 
 <div class="container">
-
+    
     <h2>Riwayat Transaksi</h2>
 
+
+    {{-- Search Bar --}}
+    <form action="{{ route('riwayat.index') }}" method="GET" class="text-center mt-4">
+        <input type="text" name="search" value="{{ request('search') }}"
+               class="form-control w-50 d-inline-block"
+               placeholder="Cari ID Transaksi (contoh: TRX-...)">
+        <button class="btn btn-info ms-2 px-3">Cari</button>
+
+        @if(request('search'))
+            <a href="{{ route('riwayat.index') }}"
+               class="btn btn-secondary ms-2">Reset</a>
+        @endif
+    </form>
+
+
     <div class="table-container">
+
         <table class="table table-dark table-striped text-center align-middle">
             <thead>
-            <tr>
-                <th>No</th>
-                <th>Tanggal</th>
-                <th>Waktu</th>
-                <th>Total</th>
-                <th>Aksi</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($riwayat as $r)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
+                    <th>ID Transaksi</th>
+                    <th>Tanggal</th>
+                    <th>Waktu</th>
+                    <th>Total</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            @forelse($riwayat as $r)
+                <tr>
+                    <td>{{ $r->kode_qr }}</td>
                     <td>{{ $r->created_at->format('Y-m-d') }}</td>
                     <td>{{ $r->created_at->format('H:i') }}</td>
                     <td>Rp{{ number_format($r->total_harga,0,',','.') }}</td>
                     <td>
-                        <button class="btn-detail" onclick="showDetail({{ $r->id }})">
-                            Detail
-                        </button>
+                        <a href="{{ route('struk.show', $r->kode_qr) }}"
+                           class="btn-detail">
+                           Detail
+                        </a>
                     </td>
                 </tr>
-            @endforeach
+            @empty
+                <tr><td colspan="5">Data tidak ditemukan.</td></tr>
+            @endforelse
             </tbody>
         </table>
-    </div>
-</div>
 
-{{-- MODAL --}}
-<div class="modal fade" id="detailModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content text-white">
-            <div class="modal-header">
-                <h5 class="modal-title">Detail Transaksi</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="modalBodyContent">
-            </div>
-        </div>
     </div>
 </div>
 

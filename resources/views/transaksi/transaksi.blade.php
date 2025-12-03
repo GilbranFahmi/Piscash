@@ -1,3 +1,4 @@
+{{-- resources/views/transaksi/transaksi.blade.php --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -12,7 +13,7 @@
     body {
       background-color: #05061a;
       color: #fff;
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Poppins', 'Great Vibes', sans-serif;
       overflow-x: hidden;
       padding-top: 100px;
     }
@@ -51,6 +52,7 @@
       box-shadow: 0 0 10px rgba(86,204,242,0.4);
       transition: 0.2s;
     }
+
     .cash-chip:hover {
       transform: translateY(-1px) scale(1.03);
       box-shadow: 0 0 16px rgba(86,204,242,0.8);
@@ -59,16 +61,63 @@
 </head>
 <body>
 
+{{-- resources/views/transaksi/transaksi.blade.php --}}
 @extends('layouts.main')
+
+@section('title', 'Transaksi')
+
 @section('content')
 
 <style>
   body {
     background-color: #05061a;
     color: #fff;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', 'Great Vibes', sans-serif;
+    overflow-x: hidden;
+    padding-top: 100px;
   }
 
+  select, input {
+    background: #081027;
+    color: #b3e9ff;
+    border: 1px solid #58d6ff66;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+
+  .btn-glow {
+    background: linear-gradient(90deg, #FF3484, #56CCF2);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    padding: 10px 20px;
+    width: 100%;
+    box-shadow: 0 0 15px rgba(88,214,255,0.6);
+  }
+
+  .kodeProdukInput.loading {
+    opacity: 0.6;
+  }
+
+  .cash-chip {
+    border-radius: 12px;
+    padding: 8px 16px;
+    border: 1px solid #56CCF2;
+    background: rgba(8,16,40,0.9);
+    color: #b3e9ff;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(86,204,242,0.4);
+    transition: 0.2s;
+  }
+
+  .cash-chip:hover {
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 0 16px rgba(86,204,242,0.8);
+  }
+
+  /* ---- layout transaksi ---- */
   .transaksi-wrapper {
     width: 100%;
     max-width: 1100px;
@@ -136,72 +185,75 @@
     border-radius: 20px;
     border: 1px solid #56CCF2;
     box-shadow: 0 0 20px rgba(88,214,255,0.4);
-    padding: 16px;
-    min-height: 320px;
+    padding: 14px;
+    min-height: 260px;
     display: flex;
     flex-direction: column;
-    align-items: center;
   }
 
   .preview-title {
-    font-size: 14px;
-    margin-bottom: 10px;
+    font-size: 13px;
+    margin-bottom: 8px;
     color: #b3e9ff;
     text-transform: uppercase;
     letter-spacing: .08em;
+    text-align: center;
   }
 
-  .preview-image-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 260px;
-    margin-bottom: 10px;
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .preview-card {
+    background: rgba(6,10,30,0.95);
+    border-radius: 12px;
+    padding: 6px;
+    border: 1px solid rgba(88,214,255,0.2);
     cursor: pointer;
+    transition: 0.15s;
+    text-align: center;
   }
 
-  .preview-img {
+  .preview-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(88,214,255,0.6);
+  }
+
+  .preview-card.active {
+    border-color: #56CCF2;
+    box-shadow: 0 0 14px rgba(88,214,255,0.8);
+  }
+
+  .preview-card-img {
     width: 100%;
-    height: 210px;
-    border-radius: 14px;
+    height: 70px;
+    border-radius: 8px;
     object-fit: cover;
-    transition: 0.2s;
-    box-shadow: 0 0 12px rgba(88,214,255,0.4);
   }
 
-  .preview-img:hover {
-    transform: scale(1.02);
+  .preview-card-img.stok-habis-img {
+    filter: grayscale(1);
   }
 
-  .preview-badge-stok {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255,61,104,0.93);
-    padding: 4px 10px;
-    border-radius: 999px;
+  .preview-card-nama {
     font-size: 11px;
-    font-weight: 700;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .preview-nama {
+  .preview-card-harga {
+    font-size: 11px;
     font-weight: 600;
-    font-size: 16px;
-    margin-top: 4px;
-    text-align: center;
-  }
-
-  .preview-harga {
-    font-weight: 700;
-    font-size: 18px;
     color: #56CCF2;
-    text-align: center;
   }
 
-  .preview-stok {
-    font-size: 13px;
-    margin-top: 4px;
-    text-align: center;
+  .preview-card-stok {
+    font-size: 10px;
   }
 
   .stok-menipis {
@@ -209,8 +261,16 @@
     font-weight: 600;
   }
 
-  .stok-habis-img {
-    filter: grayscale(1);
+  .preview-badge-stok {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,61,104,0.93);
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 700;
   }
 
   .success-glow {
@@ -224,7 +284,7 @@
   }
 
   .scan-error {
-    background-color: #ff3566 !important;
+    background-color: #ff356633 !important;
     animation: shake 0.2s linear 2;
   }
 
@@ -240,17 +300,29 @@
     75% { transform: translateX(3px) }
     100% { transform: translateX(0) }
   }
+
+  .neon-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: 36px;
+    font-weight: 400;
+    color: #58d6ff;
+    text-shadow:
+      0 0 10px rgba(88,214,255,0.9),
+      0 0 20px rgba(88,214,255,0.7),
+      0 0 30px rgba(88,214,255,0.5);
+  }
 </style>
 
 <div class="transaksi-wrapper">
 
+  {{-- KIRI: FORM TRANSAKSI --}}
   <div>
     <div class="container-transaksi">
 
-      <h4 class="text-center mb-3" style="color:#58d6ff;">Transaksi Kasir</h4>
+      <h4 class="neon-title mb-3 text-center">Transaksi</h4>
 
       @if(session('error'))
-      <div class="alert alert-danger p-2">{{ session('error') }}</div>
+        <div class="alert alert-danger p-2">{{ session('error') }}</div>
       @endif
 
       <form action="{{ route('transaksi.store') }}" method="POST" id="formTransaksi">
@@ -271,14 +343,19 @@
             <select class="form-select kategoriSelect" onchange="filterProduk(this)">
               <option value="">Kategori</option>
               @foreach($kategori as $k)
-              <option value="{{ $k->id }}">{{ $k->nama_kategori }}</option>
+                <option value="{{ $k->id }}">{{ $k->nama_kategori }}</option>
               @endforeach
             </select>
 
             <select name="produk_id[]" class="form-select produkSelect" onchange="updateHarga(this)" required>
-              <option value="">Produk</option>
+              <option value="">Nama Produk</option>
               @foreach($produks as $p)
-              <option value="{{ $p->id }}" data-kategori="{{ $p->kategori_id }}" data-harga="{{ $p->harga }}">{{ $p->kode_produk }} | {{ $p->nama_produk }}</option>
+                <option value="{{ $p->id }}"
+                        data-kategori="{{ $p->kategori_id }}"
+                        data-harga="{{ $p->harga }}"
+                        data-kode="{{ $p->kode_produk }}">
+                  {{ $p->nama_produk }}
+                </option>
               @endforeach
             </select>
 
@@ -323,7 +400,8 @@
             <button type="button" class="cash-chip pecahan" data-value="100000">100k</button>
           </div>
 
-          <input type="number" name="jumlah_bayar" id="jumlahBayar" class="form-control mt-1" placeholder="Masukkan Bayar" oninput="hitungKembalian()">
+          <input type="number" name="jumlah_bayar" id="jumlahBayar" class="form-control mt-1"
+                 placeholder="Masukkan Bayar" oninput="hitungKembalian()">
         </div>
 
         <div id="splitPay" style="display:none;">
@@ -335,7 +413,8 @@
             <option value="Debit">Debit</option>
             <option value="Kredit">Kredit</option>
           </select>
-          <input type="number" name="nominal1" class="form-control mb-2" oninput="updateSplitTotal()" placeholder="Nominal 1">
+          <input type="number" name="nominal1" class="form-control mb-2"
+                 oninput="updateSplitTotal()" placeholder="Nominal 1">
 
           <small>Pembayaran 2</small>
           <select name="metode2" class="form-select">
@@ -345,7 +424,8 @@
             <option value="Debit">Debit</option>
             <option value="Kredit">Kredit</option>
           </select>
-          <input type="number" name="nominal2" class="form-control" oninput="updateSplitTotal()" placeholder="Nominal 2">
+          <input type="number" name="nominal2" class="form-control"
+                 oninput="updateSplitTotal()" placeholder="Nominal 2">
 
           <input type="hidden" id="jumlahBayarSplit">
         </div>
@@ -359,21 +439,19 @@
     </div>
   </div>
 
+  {{-- KANAN: PREVIEW PRODUK / “KERANJANG” VISUAL --}}
   <div>
     <div class="preview-panel" id="previewPanel">
       <div class="preview-title">Preview Produk</div>
-      <div class="preview-image-wrapper" id="previewImageWrapper">
-        <img id="previewImg" src="{{ asset('images/logo5.png') }}" alt="Preview Produk" class="preview-img">
-        <span id="previewBadge" class="preview-badge-stok" style="display:none;">STOK HABIS</span>
+      <div class="preview-grid" id="previewGrid">
+        {{-- kartu preview diisi via JS --}}
       </div>
-      <div class="preview-nama" id="previewNama">Belum ada produk dipilih</div>
-      <div class="preview-harga" id="previewHarga">Rp -</div>
-      <div class="preview-stok" id="previewStok">Stok: -</div>
     </div>
   </div>
 
 </div>
 
+{{-- MODAL PREVIEW GAMBAR --}}
 <div class="modal fade" id="previewModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content" style="background:#05061a;border:1px solid #56CCF2;">
@@ -387,48 +465,93 @@ const produkData = @json($produks);
 let successSound = new Audio('/audio/success.wav');
 let errorSound = new Audio('/audio/error.wav');
 
+let selectedPreviewRow = null;
+
 function getProdukById(id){
   id = parseInt(id);
   return produkData.find(p => parseInt(p.id) === id);
 }
 
-function setPreview(produk){
-  const panel = document.getElementById('previewPanel');
-  const img = document.getElementById('previewImg');
-  const badge = document.getElementById('previewBadge');
-  const nama = document.getElementById('previewNama');
-  const harga = document.getElementById('previewHarga');
-  const stokEl = document.getElementById('previewStok');
+function buildPreviewCards() {
+  const grid = document.getElementById('previewGrid');
+  grid.innerHTML = '';
 
-  if(!produk){
-    img.src = "{{ asset('images/logo5.png') }}";
-    img.classList.remove('stok-habis-img');
-    badge.style.display = 'none';
-    nama.textContent = 'Belum ada produk dipilih';
-    harga.textContent = 'Rp -';
-    stokEl.textContent = 'Stok: -';
-    stokEl.classList.remove('stok-menipis');
-    return;
+  const items = document.querySelectorAll('.produk-item');
+  let any = false;
+
+  items.forEach((item, index) => {
+    const select = item.querySelector('.produkSelect');
+    if (!select || !select.value) return;
+
+    const produk = getProdukById(select.value);
+    if (!produk) return;
+    any = true;
+
+    const card = document.createElement('div');
+    card.className = 'preview-card';
+    if (item === selectedPreviewRow) {
+      card.classList.add('active');
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+
+    const img = document.createElement('img');
+    img.className = 'preview-card-img';
+    img.src = produk.gambar ? '/' + produk.gambar : "{{ asset('images/logo5.png') }}";
+
+    const stokBadge = document.createElement('span');
+    stokBadge.className = 'preview-badge-stok';
+    stokBadge.textContent = 'STOK HABIS';
+    stokBadge.style.display = 'none';
+
+    wrapper.appendChild(img);
+    wrapper.appendChild(stokBadge);
+    card.appendChild(wrapper);
+
+    if (produk.stok <= 0) {
+      img.classList.add('stok-habis-img');
+      stokBadge.style.display = 'inline-block';
+    }
+
+    const nama = document.createElement('div');
+    nama.className = 'preview-card-nama';
+    nama.textContent = produk.nama_produk;
+    card.appendChild(nama);
+
+    const harga = document.createElement('div');
+    harga.className = 'preview-card-harga';
+    harga.textContent = 'Rp ' + Number(produk.harga).toLocaleString('id-ID');
+    card.appendChild(harga);
+
+    const stok = document.createElement('div');
+    stok.className = 'preview-card-stok';
+    stok.textContent = 'Stok: ' + produk.stok;
+    if (produk.stok > 0 && produk.stok <= 5) {
+      stok.classList.add('stok-menipis');
+    }
+    card.appendChild(stok);
+
+    card.addEventListener('click', () => {
+      selectedPreviewRow = item;
+      buildPreviewCards();
+      const src = img.getAttribute('src');
+      document.getElementById('previewModalImg').src = src;
+      const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+      modal.show();
+    });
+
+    grid.appendChild(card);
+  });
+
+  if (!any) {
+    const empty = document.createElement('div');
+    empty.style.textAlign = 'center';
+    empty.style.fontSize = '13px';
+    empty.style.color = '#b3e9ff';
+    empty.textContent = 'Belum ada produk dipilih';
+    grid.appendChild(empty);
   }
-
-  img.src = produk.gambar ? '/' + produk.gambar : "{{ asset('images/logo5.png') }}";
-  nama.textContent = produk.nama_produk;
-  harga.textContent = 'Rp ' + Number(produk.harga).toLocaleString('id-ID');
-  stokEl.textContent = 'Stok: ' + produk.stok;
-
-  img.classList.remove('stok-habis-img');
-  badge.style.display = 'none';
-  stokEl.classList.remove('stok-menipis');
-
-  if (produk.stok <= 0){
-    img.classList.add('stok-habis-img');
-    badge.style.display = 'inline-block';
-  } else if (produk.stok <= 5){
-    stokEl.classList.add('stok-menipis');
-  }
-
-  panel.classList.add('success-glow');
-  setTimeout(()=>panel.classList.remove('success-glow'), 600);
 }
 
 function filterProduk(el){
@@ -444,19 +567,29 @@ function filterProduk(el){
 function updateHarga(el){
   const item = el.closest('.produk-item');
   const selected = el.selectedOptions[0];
+  const hargaInput = item.querySelector('.hargaInput');
+  const kodeInput = item.querySelector('.kodeProdukInput');
+
   if(!selected){
-    item.querySelector('.hargaInput').value = '';
+    if (hargaInput) hargaInput.value = '';
     updateTotal();
-    setPreview(null);
+    selectedPreviewRow = null;
+    buildPreviewCards();
     return;
   }
-  item.querySelector('.hargaInput').value = selected.dataset.harga;
-  updateTotal();
 
-  const id = el.value;
-  const produk = getProdukById(id);
+  hargaInput.value = selected.dataset.harga || 0;
+
+  const produk = getProdukById(el.value);
+  if (produk && kodeInput) {
+    kodeInput.value = produk.kode_produk || '';
+  }
+
+  selectedPreviewRow = item;
+  updateTotal();
+  buildPreviewCards();
+
   if(produk){
-    setPreview(produk);
     try { successSound.currentTime = 0; successSound.play(); } catch(e){}
   }
 }
@@ -498,17 +631,19 @@ document.querySelectorAll('.pecahan').forEach(btn=>{
 function updateSplitTotal() {
   const n1 = parseInt(document.getElementsByName('nominal1')[0].value) || 0;
   const n2 = parseInt(document.getElementsByName('nominal2')[0].value) || 0;
-  document.getElementById('jumlahBayarSplit').value = n1 + n2;
+  const totalBayar = n1 + n2;
+  document.getElementById('jumlahBayarSplit').value = totalBayar;
+
+  const bayarInput = document.getElementById('jumlahBayar');
+  if (bayarInput) bayarInput.value = totalBayar;
+
   hitungKembalian();
 }
 
 function hitungKembalian(){
   const total = parseInt(document.getElementById('totalInput').value)||0;
-  const split = document.getElementById('splitBillSelect').value==="true";
-  const bayar = split
-    ? (parseInt(document.getElementById('jumlahBayarSplit').value)||0)
-    : (parseInt(document.getElementById('jumlahBayar').value)||0);
-  document.getElementById('kembalian').value = bayar > total ? bayar-total:0;
+  const bayar = parseInt(document.getElementById('jumlahBayar').value)||0;
+  document.getElementById('kembalian').value = bayar > total ? (bayar-total) : 0;
 }
 
 let scanTimer = null;
@@ -552,20 +687,21 @@ function scanKode(input){
         produkSelect.value = data.id;
         hargaInput.value = data.harga;
 
+        input.value = data.kode_produk || '';
+        input.focus();
+        input.select();
+
+        selectedPreviewRow = item;
         updateTotal();
-        setPreview(data);
+        buildPreviewCards();
 
         item.classList.add('scan-success');
         setTimeout(() => item.classList.remove('scan-success'), 600);
-
-        input.value = '';
-        input.focus();
 
         try {
           successSound.currentTime = 0;
           successSound.play();
         } catch(_) {}
-
       })
       .catch(() => {});
   }, 300);
@@ -574,19 +710,37 @@ function scanKode(input){
 function tambahProduk(){
   const list = document.getElementById('produkList');
   const clone = list.firstElementChild.cloneNode(true);
+
   clone.querySelectorAll('input').forEach(i=>{
     if(i.classList.contains('jumlahInput')) i.value = 1;
     else i.value = '';
   });
   clone.querySelectorAll('select').forEach(s=>s.selectedIndex = 0);
+  const err = clone.querySelector('.errorScan');
+  if (err) err.style.display = 'none';
+
   clone.querySelector('.close-produk-btn')?.remove();
   const close = document.createElement('button');
   close.type='button';
   close.className='close-produk-btn';
   close.innerHTML='×';
-  close.onclick=()=>{ clone.remove(); updateTotal(); };
+  close.onclick=()=>{ 
+    const wasSelected = (clone === selectedPreviewRow);
+    clone.remove(); 
+    updateTotal(); 
+    if (wasSelected) {
+      const firstSelect = document.querySelector('.produkSelect');
+      if (firstSelect && firstSelect.value) {
+        selectedPreviewRow = firstSelect.closest('.produk-item');
+      } else {
+        selectedPreviewRow = null;
+      }
+      buildPreviewCards();
+    }
+  };
   clone.appendChild(close);
   list.appendChild(clone);
+
   const scanInput = clone.querySelector('.kodeProdukInput');
   if(scanInput) scanInput.focus();
 }
@@ -595,13 +749,7 @@ document.addEventListener('DOMContentLoaded', function(){
   const firstScan = document.querySelector('.kodeProdukInput');
   if(firstScan) firstScan.focus();
 
-  const wrapper = document.getElementById('previewImageWrapper');
-  wrapper.addEventListener('click', ()=>{
-    const src = document.getElementById('previewImg').getAttribute('src');
-    document.getElementById('previewModalImg').src = src;
-    const modal = new bootstrap.Modal(document.getElementById('previewModal'));
-    modal.show();
-  });
+  buildPreviewCards();
 
   const form = document.getElementById('formTransaksi');
   form.addEventListener('submit', function(){

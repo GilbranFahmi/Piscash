@@ -242,45 +242,86 @@
         </div>
     @endif
 
-    {{-- Form Tambah Produk --}}
-    <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" class="mb-4">
-        @csrf
-        <div class="row g-3 align-items-center">
+    <form method="GET" action="{{ route('produk.index') }}" class="mb-4">
+    <div class="row g-3 align-items-center">
+        <div class="col-md-4">
+            <input type="text" name="search"
+                   class="form-control"
+                   placeholder="Cari Kode atau Nama Produk..."
+                   value="{{ $search ?? '' }}">
+        </div>
 
-            <div class="col-md-2">
-                <input type="text" name="kode_produk" class="form-control" placeholder="Kode Produk (Scan/Isi)" required>
-            </div>
+        <div class="col-md-2">
+            <button class="btn btn-glow w-100">Search</button>
+        </div>
 
-            <div class="col-md-3">
-                <input type="text" name="nama_produk" class="form-control" placeholder="Nama Produk" required>
-            </div>
+        <div class="col-md-2">
+            <button type="button"
+                    class="btn btn-glow w-100"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addModal">
+                + Tambah Produk
+            </button>
+        </div>
+    </div>
+</form>
 
-            <div class="col-md-2">
-                <input type="number" name="harga" class="form-control" placeholder="Harga" required>
-            </div>
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content text-white">
 
-            <div class="col-md-2">
-                <input type="number" name="stok" class="form-control" placeholder="Stok" required>
-            </div>
+            <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
 
-            <div class="col-md-2">
-                <select name="kategori_id" class="form-select" required>
-                    <option value="">Kategori</option>
-                    @foreach($kategori as $k)
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Produk</h5>
+                    <button class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <label class="mb-1">Kode Produk</label>
+                    <input type="text" name="kode_produk"
+                           class="form-control mb-3" required>
+
+                    <label class="mb-1">Nama Produk</label>
+                    <input type="text" name="nama_produk"
+                           class="form-control mb-3" required>
+
+                    <label class="mb-1">Harga</label>
+                    <input type="number" name="harga"
+                           class="form-control mb-3" required>
+
+                    <label class="mb-1">Stok</label>
+                    <input type="number" name="stok"
+                           class="form-control mb-3" required>
+
+                    <label class="mb-1">Kategori</label>
+                    <select name="kategori_id" class="form-select mb-3" required>
+                        <option value="">Pilih Kategori</option>
+                        @foreach($kategori as $k)
                         <option value="{{ $k->id }}">{{ $k->nama_kategori }}</option>
-                    @endforeach
-                </select>
-            </div>
+                        @endforeach
+                    </select>
 
-            <div class="col-md-1 text-end">
-                <button type="submit" class="btn btn-glow w-100">+</button>
-            </div>
-        </div>
+                    <label>Upload Gambar</label>
+                    <input type="file" name="gambar"
+                           class="form-control" accept="image/*">
 
-        <div class="mt-3">
-            <input type="file" name="gambar" class="form-control" accept="image/*">
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary"
+                            data-bs-dismiss="modal">Batal</button>
+                    <button class="btn btn-primary">Simpan</button>
+                </div>
+
+            </form>
+
         </div>
-    </form>
+    </div>
+</div>
 
 
     {{-- Table Produk --}}
@@ -389,6 +430,13 @@
     </div>
 
 </div>
+
+@if ($errors->any())
+<script>
+    new bootstrap.Modal(document.getElementById('addModal')).show();
+</script>
+@endif
+
 
 <script>
 setTimeout(() => {

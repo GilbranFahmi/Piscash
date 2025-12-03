@@ -58,7 +58,6 @@
 </head>
 <body>
 
-{{-- ========== NAVBAR DIPINDAH KE LAYOUT ========== --}}
 <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
       <a class="navbar-brand" href="/home">
@@ -124,6 +123,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-@stack('scripts')
+
 </body>
 </html>

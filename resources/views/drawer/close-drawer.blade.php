@@ -124,15 +124,15 @@
 
 @extends('layouts.main')
 
-@section('title', 'Produk')
+@section('title', 'Close Drawer')
 
 @section('content')
 
-<h2 class="text-center mt-3" style="font-family:'Great Vibes'; color:#58d6ff; text-shadow:0 0 15px #58d6ff; font-size:2.7rem;">
+<div class="container mt-4" style="padding-top:90px;">
+
+<h2 class="text-center mb-4" style="font-family:'Great Vibes'; color:#58d6ff; text-shadow:0 0 15px #58d6ff; font-size:2.7rem;">
   Close Drawer
 </h2>
-
-<div class="container mt-4">
 
   <div class="drawer-card mb-4">
     <div class="row">
@@ -142,29 +142,30 @@
       </div>
       <div class="col-md-6 text-end">
         <p><strong>Uang Modal:</strong> Rp {{ number_format($saldo_awal,0,',','.') }}</p>
-               <p><strong>Status:</strong>
-    @if(!empty($status) && $status === 'Aktif')
-        <span class="text-success">Aktif</span>
-    @else
-        <span class="text-danger">Tidak Aktif</span>
-    @endif
-</p>
+        <p><strong>Status:</strong>
+          @if($status == 'Aktif')
+          <span class="text-success">Aktif</span>
+          @else
+          <span class="text-danger">Tidak Aktif</span>
+          @endif
+        </p>
       </div>
     </div>
   </div>
 
+  @if($status == 'Aktif')
   <div class="text-center mb-4">
     <button class="btn-glow" data-bs-toggle="modal" data-bs-target="#modalCloseDrawer">
       Tutup Drawer
     </button>
   </div>
+  @endif
 
-  <div class="row">
-
+  <div class="row mt-4">
 
     <div class="col-md-4">
       <div class="summary-box">
-        <h5>Ringkasan Drawer</h5>
+        <h5 class="mb-3" style="color:#58d6ff;">Ringkasan Drawer</h5>
         <p><strong>Uang Modal:</strong> Rp {{ number_format($saldo_awal,0,',','.') }}</p>
         <p><strong>Total Sales:</strong> Rp {{ number_format($total_masuk,0,',','.') }}</p>
         <p><strong>Saldo Akhir:</strong> Rp {{ number_format($saldo_awal + $total_masuk,0,',','.') }}</p>
@@ -172,6 +173,7 @@
     </div>
 
     <div class="col-md-8">
+      <h5 class="mb-2" style="color:#58d6ff;">Riwayat Transaksi Hari Ini</h5>
       <table class="table table-dark table-striped text-center mb-4">
         <thead>
           <tr>
@@ -197,23 +199,31 @@
         </tbody>
       </table>
 
+      <h5 class="mb-2" style="color:#58d6ff;">Riwayat Close Drawer</h5>
       <table class="table table-dark table-striped text-center">
         <thead>
           <tr>
             <th>Tanggal</th>
             <th>Kasir</th>
             <th>Saldo Akhir</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           @forelse($closeList as $r)
           <tr>
-            <td>{{ $r->waktu_tutup }}</td>
+            <td>{{ $r->waktu_tutup->format('Y-m-d H:i') }}</td>
             <td>{{ $r->kasir->nama }}</td>
             <td>Rp{{ number_format($r->saldo_akhir,0,',','.') }}</td>
+            <td>
+             <a href="{{ route('drawer.history', $r->id) }}"
+   class="btn btn-info btn-sm">
+   Show
+</a>
+            </td>
           </tr>
           @empty
-          <tr><td colspan="6">Belum ada riwayat close drawer</td></tr>
+          <tr><td colspan="4">Belum ada riwayat close drawer</td></tr>
           @endforelse
         </tbody>
       </table>
@@ -222,9 +232,12 @@
   </div>
 </div>
 
+
+{{-- MODAL TUTUP DRAWER --}}
 <div class="modal fade" id="modalCloseDrawer" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content text-dark">
+
       <form action="{{ route('close-drawer.store') }}" method="POST">
         @csrf
         <div class="modal-header">
@@ -237,6 +250,15 @@
             <p><strong>Uang Modal:</strong> Rp {{ number_format($saldo_awal,0,',','.') }}</p>
             <p><strong>Total Sales:</strong> Rp {{ number_format($total_masuk,0,',','.') }}</p>
             <p><strong>Saldo Akhir:</strong> Rp {{ number_format($saldo_awal + $total_masuk,0,',','.') }}</p>
+
+            <div class="mt-3">
+              <label><strong>Uang Keluar (opsional)</strong></label>
+              <input type="number" step="1000" min="0"
+                     name="uang_keluar"
+                     class="form-control"
+                     placeholder="Contoh: 50000">
+            </div>
+
           </div>
         </div>
 
@@ -244,12 +266,11 @@
           <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
           <button class="btn btn-primary" type="submit">Tutup Drawer</button>
         </div>
+
       </form>
     </div>
   </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 @endsection
 
