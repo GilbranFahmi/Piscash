@@ -144,23 +144,180 @@ Jawaban jika penguji bertanya:
 
 ====================================================================================================
 
-Kamu tinggal COPY semua teks ini ke:
+Berikut **prosedur lengkap dan benar** untuk menjalankan project Laravel kamu dari Git di PC sekolah. Singkat, terurut, dan bisa langsung kamu ikuti atau bagikan ke teman/guru.
+
+---
+
+# Deployment Laravel dari Git (PC Sekolah)
+
+## A. Pastikan software ini sudah tersedia
+
+Jika belum, install dulu:
+
+1. Git
+2. Composer
+3. PHP (minimal 8.x)
+4. Database server (MariaDB/MySQL)
+5. Node.js & NPM
+
+---
+
+## B. Clone Project dari GitHub
+
+Masuk ke folder yang kamu mau:
+
+```sh
+git clone https://github.com/NAMA-USER/NAMA-REPO.git
+cd NAMA-REPO
+```
+
+---
+
+## C. Install Dependency Laravel
+
+Jalankan:
+
+```sh
+composer install
+```
+
+Install frontend dependencies:
+
+```sh
+npm install
+```
+
+---
+
+## D. Setup Environment
+
+Copy konfigurasi contoh:
+
+```sh
+cp .env.example .env
+```
+
+Generate app key:
+
+```sh
+php artisan key:generate
+```
+
+---
+
+## E. Atur Database
+
+1. Buat database baru di MySQL/MariaDB (nama bebas)
+2. Edit file `.env`
+
+Contoh:
 
 ```
-README-UKK-Pisces.docx
+DB_DATABASE=pisces_db
+DB_USERNAME=root
+DB_PASSWORD=
 ```
 
-atau `.txt`
+Jika perlu migrasi tabel:
 
-Kalau kamu mau, aku bisa:
-• Format ini jadi **Microsoft Word** dengan tabel rapi, header, logo Pisces
-• Tambahkan **Cheat Sheet Tanya Jawab** tentang diagram
-• Tambahkan **alur login + middleware enforcement** sebagai penjelasan saat tanya jawab
-• Buat lembar **evaluasi bug** (kalau penguji suruh perbaiki di tempat)
+```sh
+php artisan migrate
+```
 
-Apakah kamu mau saya tambahkan juga:
-A. Ringkasan simbol Use Case, Activity, Class, ERD
-B. Jawaban singkat jika ditanya “kenapa pakai middleware?”
-C. Alur data dari scanning QR → transaksi → struk → riwayat?
+Jika kamu punya seeder:
 
-Tinggal jawab: **A, B, C atau semua**?
+```sh
+php artisan db:seed
+```
+
+---
+
+## F. Build Frontend (Bootstrap/Tailwind/JS)
+
+Mode produksi:
+
+```sh
+npm run build
+```
+
+Jika untuk development:
+
+```sh
+npm run dev
+```
+
+---
+
+## G. Jalankan Server Laravel
+
+```sh
+php artisan serve
+```
+
+Akses di browser:
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+# Catatan Penting untuk Proyek Kamu
+
+Karena kamu pakai **ekspor Excel**, pastikan di PC sekolah:
+
+```sh
+composer require maatwebsite/excel
+```
+
+Jika sudah ada di `composer.json`, composer install akan otomatis mengaktifkan.
+
+---
+
+## Troubleshooting cepat
+
+| Error                           | Solusi                              |
+| ------------------------------- | ----------------------------------- |
+| Class not found / vendor hilang | `composer install`                  |
+| UI tidak tampil                 | `npm install && npm run build`      |
+| 404 setelah clone               | Cek route atau `.env` URL           |
+| Database error                  | Sesuaikan `.env` + jalankan migrate |
+| Gambar background tidak muncul  | Cek folder `public/images/`         |
+
+---
+
+## Opsional: Dokumentasi TXT untuk PC lain
+
+Saya bisa buatkan file `SETUP.txt` yang otomatis masuk repository agar siap baca ketika clone.
+
+Mau saya tambahkan ke repo kamu?
+
+• Bahasa Indonesia
+• Singkat
+• Guru/teman pun bisa ikutin
+
+Jawab:
+
+```
+Ya, tambahkan SETUP.txt
+```
+
+atau
+
+Kalau kamu mau, saya bisa buat **script otomatis**:
+
+```
+setup.bat
+```
+
+yang bakal menjalankan semua command hanya dengan **double-click**.
+
+Tinggal jawab:
+
+```
+Saya mau setup.bat juga
+```
+
+Mau yang mana?
+
+
